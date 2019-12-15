@@ -2,4 +2,4 @@ from todolist import app
 
 @app.route("/hello/")
 def hello():
-    return "hello world"
+    return app.config["DB_NAME"]
