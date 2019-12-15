@@ -1,2 +1,2 @@
-# flask-todo
+# Todolist
 Simple Project for Learn Flask Basics
