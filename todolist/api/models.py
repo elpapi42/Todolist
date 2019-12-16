@@ -1,4 +1,4 @@
-from todolist import db
+from api import db
 
 class Task(db.Model):
     __tablename__ = "tasks"

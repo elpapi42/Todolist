@@ -1,11 +1,26 @@
 from flask import Flask
+#from flask_sqlalchemy import SQLAlchemy
 
-app = Flask(__name__)
+from api import api_bp
+from web import web_bp
 
-if app.config["ENV"] == "production":
-    app.config.from_object("todolist.config.ProductionConfig")
-else:
-    app.config.from_object("todolist.config.DevelopmentConfig")
+#db = SQLAlchemy()
 
-import todolist.views
+def create_app():
+    """ Init core application """
+    app = Flask(__name__, instance_relative_config=False)
+    app.config.from_object("config.Config")
+
+    # Init Plugins
+    #db.init_app(app)
+
+    with app.app_context():
+        app.register_blueprint(api_bp, url_prefix="/api")
+        app.register_blueprint(web_bp, url_prefix="/web")
+
+        #Create table for models
+        #db.create_all()
+
+        return app
+
 
