@@ -1,2 +1,0 @@
-FLASK_APP=todolist
-FLASK_ENV=development
