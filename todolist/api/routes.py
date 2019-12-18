@@ -1,4 +1,4 @@
 from . import api
-from .controllers import ApiEntry
+from .controllers import TaskController, UserController
 
-api.add_resource(ApiEntry, "/home/")
+api.add_resource(UserController, "/users/", "/users/<id>/")

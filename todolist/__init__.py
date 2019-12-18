@@ -1,12 +1,9 @@
-import os
-
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-from api import api_bp
-from web import web_bp
-
-db = SQLAlchemy()
+from todolist.api.models import db
+from todolist.api import api_bp
+from todolist.web import web_bp
 
 def create_app():
     """ Init core application """
@@ -21,7 +18,7 @@ def create_app():
         app.register_blueprint(web_bp)
         app.register_blueprint(api_bp, url_prefix="/api")
         
-        #Create table for models
+        # Create table for models
         db.create_all()
 
         return app

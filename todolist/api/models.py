@@ -1,4 +1,23 @@
-from api import db
+import uuid
+
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.dialects.postgresql import UUID
+
+db = SQLAlchemy()
+
+class User(db.Model):
+    """ Define User Fields """
+    __tablename__ = "users"
+
+    id = db.Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
+    email = db.Column(db.String(16), unique=True, nullable=False)
+
+    def __init__(self, email):
+        self.email = email
+        self.id = uuid.uuid4()
+
+    def __repr__(self):
+        return "<email {}>".format(self.email)
 
 class Task(db.Model):
     __tablename__ = "tasks"
