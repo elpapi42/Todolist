@@ -5,7 +5,9 @@ from validator_collection.checkers import is_uuid
 from flask import make_response, jsonify, request
 from flask_restful import Resource
 
-from .models import db, Task, User
+from . import db, User
+
+
 
 class UserController(Resource):
     """ Interact with Users DataBase Entries """
@@ -23,7 +25,6 @@ class UserController(Resource):
                 jsonify({"error": "invalid id"}),
                 422
             )
-
 
         # Tries to retreive user by id
         user = db.session.query(User).filter(User.id == id).first()
@@ -72,41 +73,3 @@ class UserController(Resource):
             }), 
             201
         )
-
-class TaskController(Resource):
-    """ Interact with Task DataBase Entries """
-
-    def get(self, taskname, id):
-        tasks = db.session.query(Task).filter(Task.title == taskname).all()
-        tasks_list = list()
-
-        for task in tasks:
-            task_dict = {
-                "id": task.id,
-                "title": task.title,
-                "description": task.description
-            }
-            tasks_list.append(task_dict)
-
-        return jsonify(tasks_list)
-
-    def post(self, taskname):
-        task = Task(taskname, request.form["description"])
-
-        db.session.add(task)
-        db.session.commit()
-
-        task_dict = {
-            "id": task.id,
-            "title": task.title,
-            "description": task.description
-        }
-
-        return jsonify(task_dict)
-
-    def put(self, taskname, id):
-        tasks = db.session.query(Task).filter(Task.title == taskname).all()
-
-
-        return "Update Task"
-

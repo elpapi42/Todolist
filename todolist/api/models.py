@@ -1,9 +1,8 @@
 import uuid
 
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import UUID
 
-db = SQLAlchemy()
+from . import db
 
 class User(db.Model):
     """ Define User Fields """
