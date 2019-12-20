@@ -1,4 +1,3 @@
-psycopg2
 flask
 flask-restful
 flask-sqlalchemy
