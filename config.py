@@ -6,5 +6,3 @@ SQLALCHEMY_TRACK_MODIFICATIONS = False
 SESSION_COOKIE_SECURE = True
 
         
-
-        
