@@ -8,6 +8,7 @@ setup(
         'flask>=0.10.1',
         'flask-restful',
         'flask-sqlalchemy',
-        'validator_collection'
+        'validator_collection',
+        'python-dotenv'
     ],
 )
