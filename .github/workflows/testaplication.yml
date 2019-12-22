@@ -19,16 +19,17 @@ jobs:
         python-version: ${{ matrix.python-version }}
     
     - uses: Harmon758/postgresql-action@v1.0.0
-    - name: Setup PostgreSQL
+      name: Setup PostgreSQL
       with:
         postgresql version: 12.1
-        postgresql db: todolist-test
-        postgresql user: postgres
-        postgresql password: root
+        postgresql db: ${{ secrets.DATABASE_NAME }}
+        postgresql user: ${{ secrets.DATABASE_USER }}
+        postgresql password: ${{ secrets.DATABASE_PASSWORD }}
     
     - name: Install dependencies
       run: |
         export PYTHONPATH=$PYTHONPATH:$(pwd)
+        export TESTING_DATABASE_URI=${{ secrets.TESTING_DATABASE_URI }}
         python -m pip install --upgrade pip
         python setup.py install
         pip install -r requirements.txt
