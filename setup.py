@@ -9,6 +9,7 @@ setup(
         'flask-restful',
         'flask-sqlalchemy',
         'validator_collection',
-        'python-dotenv'
+        'python-dotenv',
+        'psycopg2'
     ],
 )

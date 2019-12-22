@@ -4,3 +4,4 @@ flask-sqlalchemy
 flask-migrate
 validator_collection
 python-dotenv
+psycopg2
