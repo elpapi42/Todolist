@@ -10,6 +10,5 @@ setup(
         'flask-sqlalchemy',
         'validator_collection',
         'python-dotenv',
-        'psycopg2'
     ],
 )
