@@ -1,3 +1,7 @@
+import os
+from os.path import join, dirname
+
+from dotenv import load_dotenv
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
@@ -6,7 +10,7 @@ db = SQLAlchemy()
 from todolist.api import api_bp
 from todolist.web import web_bp
 
-def create_app(mode="development"):
+def create_app(testing=False):
     """ 
     Init core application 
 
@@ -14,10 +18,20 @@ def create_app(mode="development"):
         mode (str): mode of app creation: "production", "development", "test". dafult="development"
     
     """
-    app = Flask(__name__, instance_relative_config=True)
+    # Load .env vars
+    dotenv_path = join(dirname(dirname(__file__)), '.env')
+    load_dotenv(dotenv_path)
+    
+    app = Flask("todolist", instance_relative_config=True)
     app.config.from_object("config")
-    app.config.from_pyfile("{name}.py".format(name=mode))
-    app.testing = (mode == "test")
+
+    if(app.env == "development"):
+        app.config.from_pyfile("development.py")
+    
+    if(testing):
+        app.debug = True
+        app.testing = True
+        app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("TESTING_DATABASE_URI")
 
     # Init Plugins
     db.init_app(app)

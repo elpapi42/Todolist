@@ -8,8 +8,6 @@ from ... import db
 from ..models import User
 from . import format_response
 
-
-
 class UserController(Resource):
     """ Interact with Users DataBase Entries """
 

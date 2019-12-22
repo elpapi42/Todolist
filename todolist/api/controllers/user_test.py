@@ -8,7 +8,7 @@ from ... import create_app, db
 
 @pytest.fixture
 def instance():
-    app = create_app(mode="test")
+    app = create_app(testing=True)
     return app.test_client()
 
 def test_get_users(instance):
