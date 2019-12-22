@@ -2,7 +2,7 @@ import uuid
 
 from sqlalchemy.dialects.postgresql import UUID
 
-from . import db
+from ... import db
 
 class User(db.Model):
     """ Define User Fields """

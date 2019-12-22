@@ -4,7 +4,11 @@ from validator_collection.checkers import is_uuid, is_email
 from flask import request, make_response, jsonify
 from flask_restful import Resource
 
-from . import format_response, db, User
+from ... import db
+from ..models import User
+from . import format_response
+
+
 
 class UserController(Resource):
     """ Interact with Users DataBase Entries """

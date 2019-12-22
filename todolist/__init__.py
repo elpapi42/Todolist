@@ -1,7 +1,8 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-from todolist.api.models import db
+db = SQLAlchemy()
+
 from todolist.api import api_bp
 from todolist.web import web_bp
 

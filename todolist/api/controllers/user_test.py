@@ -4,7 +4,7 @@ import uuid
 
 from flask import Response
 
-from todolist import create_app, db
+from ... import create_app, db
 
 @pytest.fixture
 def instance():
