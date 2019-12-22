@@ -12,7 +12,7 @@ def format_response(message, status, message_type="error"):
         status
     )
 
-from .user_temp import UserController
+from .user import UserController
 
 
     
