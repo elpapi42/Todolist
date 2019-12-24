@@ -9,7 +9,7 @@ db = SQLAlchemy()
 
 from todolist.api import api_bp
 from todolist.web import web_bp
-from todolist.auth import auth_bp
+from todolist.auth import auth_bp, github_bp
 
 def create_app(testing=False):
     """ 
@@ -41,6 +41,7 @@ def create_app(testing=False):
         app.register_blueprint(web_bp)
         app.register_blueprint(api_bp, url_prefix="/api")
         app.register_blueprint(auth_bp, url_prefix="/auth")
+        app.register_blueprint(github_bp, url_prefix="/auth/github")
 
         # Drop all the tables from test database if in test mode
         if(app.testing):

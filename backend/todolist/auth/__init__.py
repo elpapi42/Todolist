@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, url_for
 from flask_dance.contrib.github import make_github_blueprint
 from flask_dance.consumer.storage.sqla import SQLAlchemyStorage
 from flask_dance.consumer import oauth_authorized
@@ -8,7 +8,7 @@ from ..api.models import User
 from .. import db
 
 auth_bp = Blueprint("auth_bp", __name__)
-github_bp = make_github_blueprint(storage=SQLAlchemyStorage(OAuth, db.session, User=User))
+github_bp = make_github_blueprint(redirect_url="/login/github/callback/", storage=SQLAlchemyStorage(OAuth, db.session))
 
 @oauth_authorized.connect_via(github_bp)
 def github_logged_in(blueprint, token):
