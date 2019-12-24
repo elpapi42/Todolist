@@ -8,7 +8,5 @@ class GithubLogin(Resource):
     """ Login Controller """
 
     def get(self):
-        if(not github.authorized):
-            return redirect(url_for("github.login"))
-        return "github login"
+        return redirect(url_for("github.login"))
         

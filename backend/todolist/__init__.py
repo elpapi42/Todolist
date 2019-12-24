@@ -4,8 +4,10 @@ from os.path import join, dirname
 from dotenv import load_dotenv
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
 
 db = SQLAlchemy()
+login_manager = LoginManager()
 
 from todolist.api import api_bp
 from todolist.web import web_bp
@@ -36,6 +38,7 @@ def create_app(testing=False):
 
     # Init Plugins
     db.init_app(app)
+    login_manager.init_app(app)
 
     with app.app_context():
         app.register_blueprint(web_bp)

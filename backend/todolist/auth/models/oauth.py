@@ -8,6 +8,7 @@ from ...api.models import User
 
 class OAuth(OAuthConsumerMixin, db.Model):
     """ Storage for oauth tokens """
+    __tablename__ = "oauth_tokens"
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
     user_id = db.Column(UUID(as_uuid=True), db.ForeignKey(User.id))

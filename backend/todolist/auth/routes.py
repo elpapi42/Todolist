@@ -13,4 +13,4 @@ auth.add_resource(GithubLogin, "/github/login/")
 @auth_bp.route("/github/login/callback/")
 def callback():
     user = db.session.query(User).filter(User.email == "whitman-2@hotmail.com").first()
-    return str(user.repr())
+    return str(user)
