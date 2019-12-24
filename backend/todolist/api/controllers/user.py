@@ -121,7 +121,7 @@ class UserController(Resource):
         db.session.delete(user)
         db.session.commit()
 
-        return make_response(code=204)
+        return make_response("user deleted", 204)
 
         
 
