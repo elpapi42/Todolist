@@ -1,5 +1,4 @@
 from flask_restful import Api
-from flask_dance.contrib.github import github
 
 from . import auth_bp
 
