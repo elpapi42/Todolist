@@ -44,7 +44,7 @@ def create_app(testing=False):
         app.register_blueprint(web_bp)
         app.register_blueprint(api_bp, url_prefix="/api")
         app.register_blueprint(auth_bp, url_prefix="/auth")
-        app.register_blueprint(github_bp, url_prefix="/auth/github")
+        app.register_blueprint(github_bp, url_prefix="/auth/provider")
 
         # Drop all the tables from test database if in test mode
         if(app.testing):

@@ -7,6 +7,6 @@ from .models import OAuth
 from .. import db
 
 auth_bp = Blueprint("auth_bp", __name__)
-github_bp = make_github_blueprint(redirect_url="/login/github/callback/", storage=SQLAlchemyStorage(OAuth, db.session, user=current_user))
+github_bp = make_github_blueprint(storage=SQLAlchemyStorage(OAuth, db.session))
 
 from . import routes
