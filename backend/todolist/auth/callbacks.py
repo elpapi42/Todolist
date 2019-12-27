@@ -12,13 +12,10 @@ from ..api.models import User
 @oauth_authorized.connect_via(github_bp)
 def github_logged_in(blueprint, token):
     if not token:
-        flash("Failed to log in with GitHub.", category="error")
         return False
 
     resp = blueprint.session.get("/user")
     if not resp.ok:
-        msg = "Failed to fetch user info from GitHub."
-        flash(msg, category="error")
         return False
 
     github_info = resp.json()
@@ -34,10 +31,8 @@ def github_logged_in(blueprint, token):
         db.session.commit()
         
     login_user(user)
-    flash("Successfully signed in with GitHub.")
 
 @login_manager.user_loader
 def user_loader(id):
-    user = db.session.query(User).filter(User.id == id).first()
-    return user
+    return db.session.query(User).filter(User.id == id).first()
     
