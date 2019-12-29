@@ -2,6 +2,11 @@ flask
 flask-restful
 flask-sqlalchemy
 flask-migrate
+flask-dance
+flask-login
 validator_collection
 python-dotenv
 psycopg2-binary
+sqlalchemy
+sqlalchemy-utils
+blinker

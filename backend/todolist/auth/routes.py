@@ -1,8 +1,8 @@
 from flask_restful import Api
 
 from . import auth_bp
-from .controllers import GithubLogin
+
+from ..api.models import User
+from .. import db
 
 auth = Api(auth_bp)
-
-auth.add_resource(GithubLogin, "/login/github/")
