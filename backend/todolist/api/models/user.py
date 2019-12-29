@@ -1,10 +1,11 @@
 import uuid
 
 from sqlalchemy.dialects.postgresql import UUID
+from flask_login import UserMixin
 
 from ... import db
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     """ Define User Fields """
     __tablename__ = "users"
 
@@ -17,3 +18,6 @@ class User(db.Model):
 
     def __repr__(self):
         return "<email {}>".format(self.email)
+
+    def get_id(self):
+        return str(self.id)
