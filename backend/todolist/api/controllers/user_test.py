@@ -1,10 +1,8 @@
-import pytest
 import json
 import uuid
+import pytest
 
-from flask import Response
-
-from ... import create_app, db
+from ... import create_app
 
 @pytest.fixture
 def instance():
