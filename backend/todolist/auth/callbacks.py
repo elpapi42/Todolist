@@ -8,6 +8,7 @@ from . import github_bp
 from .. import login_manager
 from .. import db
 from ..api.models import User
+from .models import OAuth
 
 @oauth_authorized.connect_via(github_bp)
 def github_logged_in(blueprint, token):
@@ -20,24 +21,25 @@ def github_logged_in(blueprint, token):
 
     github_info = resp.json()
 
-    query = db.session.query(User).filter(User.email == github_info["email"])
-
     # If user does not exists, create record using email
     try:
-        user = query.one()
+        user = db.session.query(User).filter(User.email == github_info["email"]).one()
     except NoResultFound:
         user = User(github_info["email"])
         db.session.add(user)
-        db.session.commit()
-        
+
+    # If oauth token does not exist, create a new one, and attach it to the recently created user
+    try:
+        oauth_token = db.session.query(OAuth).filter(OAuth.user_id == user.id).one()
+    except NoResultFound:
+        oauth_token = OAuth(blueprint.name, token, user.id, user)
+        db.session.add(oauth_token)
+
+    db.session.commit()
     login_user(user)
+    return False
 
 @login_manager.user_loader
 def user_loader(id):
     return db.session.query(User).filter(User.id == id).first()
-
-@oauth_error.connect
-def error(error):
-    raise Exception()
-    return error
     

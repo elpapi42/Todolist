@@ -12,4 +12,4 @@ github_bp = make_github_blueprint(
     authorized_url="/github/authorized/",
 )
 
-from . import routes
+from . import routes, callbacks
