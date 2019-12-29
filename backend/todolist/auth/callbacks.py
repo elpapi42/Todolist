@@ -1,6 +1,6 @@
 import uuid
 
-from flask_dance.consumer import oauth_authorized
+from flask_dance.consumer import oauth_authorized, oauth_error
 from flask_login import login_user
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -35,4 +35,9 @@ def github_logged_in(blueprint, token):
 @login_manager.user_loader
 def user_loader(id):
     return db.session.query(User).filter(User.id == id).first()
+
+@oauth_error.connect
+def error(error):
+    raise Exception()
+    return error
     

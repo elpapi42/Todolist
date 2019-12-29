@@ -7,7 +7,7 @@ from .. import db
 
 auth = Api(auth_bp)
 
-from flask import redirect, url_for
-@auth_bp.route("/github/authorized/")
-def callback():
-    return redirect(url_for("web_bp.home"))
+#from flask import redirect, url_for
+#@auth_bp.route("/github/authorized/")
+#def callback():
+#   return "callback"
