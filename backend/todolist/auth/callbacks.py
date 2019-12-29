@@ -1,6 +1,4 @@
-import uuid
-
-from flask_dance.consumer import oauth_authorized, oauth_error
+from flask_dance.consumer import oauth_authorized
 from flask_login import login_user
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -23,14 +21,14 @@ def github_logged_in(blueprint, token):
 
     # If user does not exists, create record using email
     try:
-        user = db.session.query(User).filter(User.email == github_info["email"]).one()
+        user = User.query.filter(User.email == github_info["email"]).one()
     except NoResultFound:
         user = User(github_info["email"])
         db.session.add(user)
 
     # If oauth token does not exist, create a new one, and attach it to the recently created user
     try:
-        oauth_token = db.session.query(OAuth).filter(OAuth.user_id == user.id).one()
+        oauth_token = OAuth.query.filter(OAuth.user_id == user.id).one()
     except NoResultFound:
         oauth_token = OAuth(blueprint.name, token, user.id, user)
         db.session.add(oauth_token)
@@ -41,5 +39,5 @@ def github_logged_in(blueprint, token):
 
 @login_manager.user_loader
 def user_loader(id):
-    return db.session.query(User).filter(User.id == id).first()
+    return User.query.filter(User.id == id).first()
     
