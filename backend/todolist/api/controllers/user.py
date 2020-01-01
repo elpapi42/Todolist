@@ -7,9 +7,12 @@ from flask_restful import Resource
 from ... import db
 from ..models import User
 from . import format_response
+from ..decorators import auth_token_required
 
 class UserController(Resource):
     """ Interact with Users DataBase Entries """
+
+    method_decorators = [auth_token_required]
 
     def get(self, id=None):
         if(not id):
