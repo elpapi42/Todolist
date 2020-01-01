@@ -8,7 +8,13 @@ setup(
         'flask>=0.10.1',
         'flask-restful',
         'flask-sqlalchemy',
+        'flask-dance',
+        'flask-login',
         'validator_collection',
         'python-dotenv',
+        'sqlalchemy',
+        'sqlalchemy-utils',
+        'blinker',
+        'pyjwt',
     ],
 )
