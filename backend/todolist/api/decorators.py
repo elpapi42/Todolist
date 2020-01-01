@@ -10,9 +10,11 @@ def auth_token_required(func):
     @functools.wraps(func)
     def wrapper_auth_token_required(*args, **kwargs):
         # Retrieves token and checks integrity
-        token = request.headers.get("Authorization")
+        scheme, token = request.headers.get("Authorization").split(sep=" ")
         if(not token):
             return format_response("missing token", 400)
+        if(scheme != "Bearer"):
+            return format_response("unsupported auth scheme", 400)
 
         # Try to Decode token
         try:

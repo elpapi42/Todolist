@@ -21,7 +21,7 @@ class IssueToken(Resource):
 
         return jsonify({
             "id": current_user.id,
-            "token": token
+            "token": "Bearer {}".format(token)
         })
         
         
