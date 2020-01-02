@@ -8,6 +8,7 @@ from .. import db
 auth_bp = Blueprint("auth_bp", __name__)
 github_bp = make_github_blueprint(
     storage=SQLAlchemyStorage(OAuth, db.session), 
+    redirect_url="/auth/token/",
     login_url="/github/", 
     authorized_url="/github/authorized/",
 )
