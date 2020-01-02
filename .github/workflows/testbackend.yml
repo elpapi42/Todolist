@@ -44,5 +44,5 @@ jobs:
       run: |
         export TESTING_DATABASE_URI=${{ secrets.TESTING_DATABASE_URI }}
         export SECRET_KEY=${{ secrets.SECRET_KEY }}
-        echo PYTHONPATH
+        python -c "import sys; print(sys.path)"
         pytest
