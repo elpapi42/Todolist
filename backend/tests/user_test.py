@@ -7,9 +7,9 @@ import os
 
 from flask import Response
 
-from ... import create_app, db
-from ..models import User
-from ...auth.models import OAuth
+from todolist import create_app, db
+from todolist.api.models import User
+from todolist.auth.models import OAuth
 
 @pytest.fixture
 def instance():
