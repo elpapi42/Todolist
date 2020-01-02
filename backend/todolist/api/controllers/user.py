@@ -6,6 +6,7 @@ from flask_restful import Resource
 
 from ... import db
 from ..models import User
+from ...auth.models import OAuth
 from . import format_response
 from ..decorators import auth_token_required
 
@@ -74,27 +75,27 @@ class UserController(Resource):
         if(not is_uuid(id)):
             return format_response("invalid id", 422)
 
+        # Retrieve email from request body
+        email = request.form.get("email")
+        if(not email):
+            return format_response("missing email", 400)
+
+        # Check email is valid
+        if(not is_email(email)):
+            return format_response("invalid email", 422)
+
         # Tries to retreive user by id
         user = db.session.query(User).filter(User.id == id).first()
         if(not user):
             return format_response("not found", 404)
 
-        # Retrieve email from request body
-        email = request.form.get("email")
-
-        # Check email in body
-        if(email):
-            # Check email is valid
-            if(not is_email(email)):
-                return format_response("invalid email", 422)
-
-            # Checks if email is already registered by another user on the Database
-            db_user = db.session.query(User).filter(User.email == email).first()
-            if(db_user):
-                return format_response("email already registered", 403)
-            
-            # Updates the email
-            user.email = email
+        # Checks if email is already registered by another user on the Database
+        db_user = db.session.query(User).filter(User.email == email).first()
+        if(db_user):
+            return format_response("email already registered", 403)
+        
+        # Updates the email
+        user.email = email
 
         # Commit changes to the database
         db.session.commit()
@@ -121,6 +122,12 @@ class UserController(Resource):
         if(not user):
             return format_response("not found", 404)
 
+        # Try to retrieve oauth_token related to the user
+        oauth_token = OAuth.query.filter(OAuth.user_id == id).first()
+        if(not oauth_token):
+            return format_response("database integrity error", 500)
+
+        db.session.delete(oauth_token)
         db.session.delete(user)
         db.session.commit()
 

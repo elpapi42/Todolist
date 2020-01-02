@@ -18,7 +18,7 @@ def auth_token_required(func):
 
         # Try to Decode token
         try:
-            payload = jwt.decode(token, os.environ["SECRET_KEY"])
+            payload = jwt.decode(token, os.environ["SECRET_KEY"], algorithms=["HS256"])
         except jwt.ExpiredSignatureError:
             return format_response("token expired", 403)
         except jwt.DecodeError:

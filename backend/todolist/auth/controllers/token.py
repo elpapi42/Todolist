@@ -8,7 +8,9 @@ from flask_login import login_required, current_user
 
 class IssueToken(Resource):
     """ Return a token that grants access tothe API """
+
     method_decorators = [login_required]
+    
     def get(self):
         jwt_payload = {
             "uid": str(current_user.id),
@@ -17,7 +19,7 @@ class IssueToken(Resource):
             "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=24),
         }
 
-        token = jwt.encode(jwt_payload, os.environ["SECRET_KEY"]).decode("utf-8")
+        token = jwt.encode(jwt_payload, os.environ["SECRET_KEY"], algorithm="HS256").decode("utf-8")
 
         return jsonify({
             "id": current_user.id,
