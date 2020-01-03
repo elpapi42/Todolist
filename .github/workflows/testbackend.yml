@@ -44,7 +44,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r backend/requirements.txt
-        python backend/setup.py
+        python backend/setup.py install
         pip install pytest
     
     - name: Test with pytest
