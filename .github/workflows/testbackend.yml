@@ -36,14 +36,14 @@ jobs:
         
     - name: Install dependencies
       run: |
+        cd backend
+        PYTHONPATH="${PYTHONPATH}:/home/runner/work/Todolist/Todolist/backend/todolist/"
+        export TESTING_DATABASE_URI=${{ secrets.TESTING_DATABASE_URI }}
+        export SECRET_KEY=${{ secrets.SECRET_KEY }}
         python -m pip install --upgrade pip
-        pip install -r backend/requirements.txt
+        pip install -r requirements.txt
         pip install pytest
     
     - name: Test with pytest
       run: |
-        PYTHONPATH="${PYTHONPATH}:/home/runner/work/Todolist/Todolist/backend/todolist/"
-        cd backend
-        export TESTING_DATABASE_URI=${{ secrets.TESTING_DATABASE_URI }}
-        export SECRET_KEY=${{ secrets.SECRET_KEY }}
         pytest
