@@ -2,7 +2,7 @@ import uuid
 
 from flask import Response
 
-from test_fixtures import instance, user_id, token
+from .test_fixtures import instance, user_id, token
 
 def test_get_users(instance, token):
     response = instance.get(

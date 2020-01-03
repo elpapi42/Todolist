@@ -18,7 +18,7 @@ def create_app(testing=False):
     Init core application 
 
     args:
-        mode (str): mode of app creation: "production", "development", "test". dafult="development"
+        testing (bool): if true, the app will be ready for be tested using the test suit, default: False
     
     """
     # Load .env vars
