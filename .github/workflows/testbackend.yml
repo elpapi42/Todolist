@@ -34,17 +34,18 @@ jobs:
         postgresql user: ${{ secrets.DATABASE_USER }}
         postgresql password: ${{ secrets.DATABASE_PASSWORD }}
         
-    - name: Install dependencies
+    - name: Setup environment
       run: |
-        cd backend
-        PYTHONPATH="${PYTHONPATH}:/home/runner/work/Todolist/Todolist/backend/todolist/"
+        PYTHONPATH="${PYTHONPATH}:/home/runner/work/Todolist/Todolist/backend"
         export TESTING_DATABASE_URI=${{ secrets.TESTING_DATABASE_URI }}
         export SECRET_KEY=${{ secrets.SECRET_KEY }}
+
+    - name: Install dependencies
+      run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install pytest
     
     - name: Test with pytest
       run: |
-        cd backend
         pytest
