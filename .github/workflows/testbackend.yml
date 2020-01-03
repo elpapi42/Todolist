@@ -37,6 +37,7 @@ jobs:
     - name: Setup environment
       run: |
         PYTHONPATH="${PYTHONPATH}:/home/runner/work/Todolist/Todolist/backend"
+        echo PYTHONPATH
         export TESTING_DATABASE_URI=${{ secrets.TESTING_DATABASE_URI }}
         export SECRET_KEY=${{ secrets.SECRET_KEY }}
 
