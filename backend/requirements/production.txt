@@ -1,4 +1,4 @@
-flask
+flask==1.1.1
 flask-restful
 flask-sqlalchemy
 flask-dance
@@ -6,8 +6,7 @@ flask-login
 flask-migrate
 validator_collection
 python-dotenv
-psycopg2-binary
-sqlalchemy
+sqlalchemy==1.3.12
 sqlalchemy-utils
 blinker
 pyjwt
