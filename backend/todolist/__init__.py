@@ -47,8 +47,8 @@ def create_app(testing=False):
         app.register_blueprint(github_bp, url_prefix="/auth")
         
         # Drop all the tables from test database if in test mode
-        #if(app.testing):
-        #    db.drop_all()
+        if(app.testing):
+            db.drop_all()
         
         # Create table for models
         db.create_all()
