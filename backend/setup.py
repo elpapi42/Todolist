@@ -2,8 +2,6 @@ import subprocess
 import sys
 import os
 from setuptools import setup, find_packages
-from setuptools.command.develop import develop
-from setuptools.command.install import install
 
 with open(os.path.join(os.path.dirname(__file__), 'requirements/production.txt')) as f:
     INSTALL_REQUIRES = f.read()
