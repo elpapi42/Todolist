@@ -15,6 +15,7 @@ class IssueToken(Resource):
         jwt_payload = {
             "uid": str(current_user.id),
             "eml": current_user.email,
+            "adm": current_user.is_admin,
             "iat": datetime.datetime.utcnow(),
             "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=24),
         }
