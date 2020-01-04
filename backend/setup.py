@@ -4,10 +4,10 @@ from setuptools import setup, find_packages
 from setuptools.command.develop import develop
 from setuptools.command.install import install
 
-with open('requirements/production.txt') as f:
+with open('/requirements/production.txt') as f:
     INSTALL_REQUIRES = f.read()
 
-with open('requirements/test.txt') as f:
+with open('/requirements/test.txt') as f:
     TEST_REQUIRES = f.read()
 
 setup(
