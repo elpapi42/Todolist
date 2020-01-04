@@ -4,30 +4,11 @@ from setuptools import setup, find_packages
 from setuptools.command.develop import develop
 from setuptools.command.install import install
 
-INSTALL_REQUIRES = [
-    'flask>=0.10.1',
-    'flask-restful',
-    'flask-sqlalchemy',
-    'flask-dance',
-    'flask-login',
-    'validator_collection',
-    'python-dotenv',
-    'sqlalchemy',
-    'sqlalchemy-utils',
-    'blinker',
-    'pyjwt',
-]
+with open('requirements/production.txt') as f:
+    INSTALL_REQUIRES = f.read()
 
-TEST_REQUIRES = [
-    'pytest',
-    'psycopg2-binary'
-]
-
-class PostDevelopCommand(develop):
-    """Post-installation for development mode."""
-    def run(self):
-        subprocess.check_call([sys.executable, "-m", "pip", "install", *TEST_REQUIRES])
-        develop.run(self)
+with open('requirements/test.txt') as f:
+    TEST_REQUIRES = f.read()
 
 setup(
     author="Whitman Bohorquez, Jorge Ocaris, Jesus Perez",
@@ -51,9 +32,6 @@ setup(
         'Topic :: Software Development :: Build Tools',
         'Intended Audience :: Developers',
     ],
-    cmdclass={
-        'develop': PostDevelopCommand,
-    },
 )
 
 
