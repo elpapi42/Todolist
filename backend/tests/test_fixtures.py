@@ -18,6 +18,7 @@ def token():
     jwt_payload = {
         "uid": "c82753c6-0775-46c4-b050-af8eee8b9c93",
         "eml": "test@test.com",
+        "adm": False,
         "iat": datetime.datetime.utcnow(),
         "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=24),
     }
