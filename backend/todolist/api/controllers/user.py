@@ -20,14 +20,15 @@ class UserController(Resource):
         # set id to the id of the user associated with the auth token provided to the api call
         if(id == "current"):
             id = token_data.get("id")
+
+        # Check if supplied id complains with UUID standards
+        elif(not is_uuid(id)):
+            return format_response("invalid id", 422)
+
         # If the token isnot owned by an admin, and the url id dont match with the id of the supplied token owner
         # Cancel the operation because a user can only make ops on his data
         elif((id != token_data.get("id")) and (not token_data.get("is_admin"))):
             return format_response("non authorized", 403)
-
-        # Check if supplied id complains with UUID standards
-        if(not is_uuid(id)):
-            return format_response("invalid id", 422)
 
         # Tries to retreive user by id
         user = User.query.filter(User.id == id).first()
@@ -48,19 +49,24 @@ class UserController(Resource):
         # set id to the id of the user associated with the auth token provided to the api call
         if(id == "current"):
             id = token_data.get("id")
+
+        # Check if supplied id complains with UUID standards
+        elif(not is_uuid(id)):
+            return format_response("invalid id", 422)
+            
         # If the token isnot owned by an admin, and the url id dont match with the id of the supplied token owner
         # Cancel the operation because a user can only make ops on his data
         elif((id != token_data.get("id")) and (not token_data.get("is_admin"))):
             return format_response("non authorized", 403)
 
-        # Check if supplied id complains with UUID standards
-        if(not is_uuid(id)):
-            return format_response("invalid id", 422)
-
         # Tries to retreive user by id
         user = db.session.query(User).filter(User.id == id).first()
         if(not user):
             return format_response("not found", 404)
+
+        # If user is admin, cant be edited by other user or admin, but by himslef
+        if(user.is_admin and (user.id != token_data.get("id"))):
+            return format_response("non authorized", 403)
 
         # Edit user data from here
 
@@ -81,19 +87,24 @@ class UserController(Resource):
         # set id to the id of the user associated with the auth token provided to the api call
         if(id == "current"):
             id = token_data.get("id")
+
+        # Check if supplied id complains with UUID standards
+        elif(not is_uuid(id)):
+            return format_response("invalid id", 422)
+            
         # If the token isnot owned by an admin, and the url id dont match with the id of the supplied token owner
         # Cancel the operation because a user can only make ops on his data
         elif((id != token_data.get("id")) and (not token_data.get("is_admin"))):
             return format_response("non authorized", 403)
 
-        # Check if supplied id complains with UUID standards
-        if(not is_uuid(id)):
-            return format_response("invalid id", 422)
-
         # Tries to retreive user by id
         user = db.session.query(User).filter(User.id == id).first()
         if(not user):
             return format_response("not found", 404)
+
+        # If user is admin, cant be edited by other user or admin, but by himslef
+        if(user.is_admin and (user.id != token_data.get("id"))):
+            return format_response("non authorized", 403)
 
         # Try to retrieve oauth_token related to the user
         oauth_token = OAuth.query.filter(OAuth.user_id == id).first()

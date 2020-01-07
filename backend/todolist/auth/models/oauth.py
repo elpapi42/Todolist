@@ -15,11 +15,11 @@ class OAuth(OAuthConsumerMixin, db.Model):
     user = db.relationship(User, uselist=False)
 
     def __init__(self, provider, token, user_id, user):
+        self.id = uuid.uuid4()
         self.provider = provider
         self.token = token
         self.user_id = user_id
         self.user = user
-        self.id = uuid.uuid4()
-
+        
     def __repr__(self):
-        return "<user {}>".format(self.user_id.email)
+        return "<user {}>".format(self.user.email)

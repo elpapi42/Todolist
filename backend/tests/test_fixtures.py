@@ -1,6 +1,7 @@
 import datetime
 import jwt
 import os
+import uuid
 
 import pytest
 
@@ -14,26 +15,28 @@ def instance():
     return app.test_client()
 
 @pytest.fixture
-def token():
+def user():
+    """ Creates and user and return it id and access token """
+    app = create_app(testing=True)
+
+    id = uuid.uuid4()
+
+    # Token testing payload
     jwt_payload = {
-        "uid": "c82753c6-0775-46c4-b050-af8eee8b9c93",
-        "eml": "test@test.com",
+        "uid": str(id),
+        "eml": "{}@test.com".format(id),
         "adm": False,
         "iat": datetime.datetime.utcnow(),
         "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=24),
     }
 
+    # Generate token
     token = jwt.encode(jwt_payload, os.environ["SECRET_KEY"], algorithm="HS256").decode("utf-8")
-
-    return "Bearer {}".format(token)
-
-@pytest.fixture
-def user_id():
-    app = create_app(testing=True)
+    token = "Bearer {}".format(token)
 
     with app.app_context():
-        user = User("test@test.com")
-        user.id = "c82753c6-0775-46c4-b050-af8eee8b9c93"
+        user = User("{}@test.com".format(id))
+        user.id = id
         db.session.add(user)
 
         github_token = {
@@ -47,4 +50,42 @@ def user_id():
 
         db.session.commit()
 
-        return user.id
+        return {
+            "id": user.id,
+            "token": token
+        }
+
+@pytest.fixture
+def admin():
+    """ Creates and user with admin permission and return its id and access token """
+    app = create_app(testing=True)
+
+    id = uuid.uuid4()
+
+    # Token testing payload
+    jwt_payload = {
+        "uid": str(id),
+        "eml": "{}@test.com".format(id),
+        "adm": True,
+        "iat": datetime.datetime.utcnow(),
+        "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=24),
+    }
+
+    # Generate token
+    token = jwt.encode(jwt_payload, os.environ["SECRET_KEY"], algorithm="HS256").decode("utf-8")
+    token = "Bearer {}".format(token)
+
+    with app.app_context():
+        user = User("{}@test.com".format(id))
+        user.id = id
+        db.session.add(user)
+
+        oauth_token = OAuth("local", None, user.id, user)
+        db.session.add(oauth_token)
+
+        db.session.commit()
+
+        return {
+            "id": user.id,
+            "token": token
+        }
