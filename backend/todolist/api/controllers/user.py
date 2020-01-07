@@ -13,17 +13,24 @@ from ..decorators import token_required, admin_required
 class UserController(Resource):
     """ Interact with Users DataBase Entries """
 
+    method_decorators = [token_required]
 
-    def get(self, id=None, *args, **kwargs):
-        if(not id):
-            return format_response("not implemented", 501)
-        
+    def get(self, id, token_data, *args, **kwargs):
+        # If there is no id, but "current" at the url, 
+        # set id to the id of the user associated with the auth token provided to the api call
+        if(id == "current"):
+            id = token_data.get("id")
+        # If the token isnot owned by an admin, and the url id dont match with the id of the supplied token owner
+        # Cancel the operation because a user can only make ops on his data
+        elif((id != token_data.get("id")) and (not token_data.get("is_admin"))):
+            return format_response("non authorized", 403)
+
         # Check if supplied id complains with UUID standards
         if(not is_uuid(id)):
             return format_response("invalid id", 422)
 
         # Tries to retreive user by id
-        user = db.session.query(User).filter(User.id == id).first()
+        user = User.query.filter(User.id == id).first()
         if(not user):
             return format_response("not found", 404)
 
@@ -35,35 +42,27 @@ class UserController(Resource):
             200
         )
 
-    def put(self, id=None, *args, **kwargs):
-        if(not id):
-            return format_response("put not allowed", 405)
+    def put(self, id, token_data, *args, **kwargs):
+        return format_response("'PUT' will be implemented when the user get some data like username or biography", 501)
+        # If there is no id, but "current" at the url, 
+        # set id to the id of the user associated with the auth token provided to the api call
+        if(id == "current"):
+            id = token_data.get("id")
+        # If the token isnot owned by an admin, and the url id dont match with the id of the supplied token owner
+        # Cancel the operation because a user can only make ops on his data
+        elif((id != token_data.get("id")) and (not token_data.get("is_admin"))):
+            return format_response("non authorized", 403)
 
         # Check if supplied id complains with UUID standards
         if(not is_uuid(id)):
             return format_response("invalid id", 422)
-
-        # Retrieve email from request body
-        email = request.form.get("email")
-        if(not email):
-            return format_response("missing email", 400)
-
-        # Check email is valid
-        if(not is_email(email)):
-            return format_response("invalid email", 422)
 
         # Tries to retreive user by id
         user = db.session.query(User).filter(User.id == id).first()
         if(not user):
             return format_response("not found", 404)
 
-        # Checks if email is already registered by another user on the Database
-        db_user = db.session.query(User).filter(User.email == email).first()
-        if(db_user):
-            return format_response("email already registered", 403)
-        
-        # Updates the email
-        user.email = email
+        # Edit user data from here
 
         # Commit changes to the database
         db.session.commit()
@@ -77,9 +76,15 @@ class UserController(Resource):
             200
         )
 
-    def delete(self, id=None, *args, **kwargs):
-        if(not id):
-            return format_response("delete not allowed", 405)
+    def delete(self, id, token_data, *args, **kwargs):
+        # If there is no id, but "current" at the url, 
+        # set id to the id of the user associated with the auth token provided to the api call
+        if(id == "current"):
+            id = token_data.get("id")
+        # If the token isnot owned by an admin, and the url id dont match with the id of the supplied token owner
+        # Cancel the operation because a user can only make ops on his data
+        elif((id != token_data.get("id")) and (not token_data.get("is_admin"))):
+            return format_response("non authorized", 403)
 
         # Check if supplied id complains with UUID standards
         if(not is_uuid(id)):

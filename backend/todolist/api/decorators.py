@@ -12,7 +12,7 @@ def token_required(func):
         # Retrieves token and checks integrity
         scheme, token = request.headers.get("Authorization").split(sep=" ")
         if(not token):
-            return format_response("missing token", 400)
+            return format_response("missing token", 401)
         if(scheme != "Bearer"):
             return format_response("unsupported auth scheme", 400)
 
@@ -22,9 +22,14 @@ def token_required(func):
         except jwt.ExpiredSignatureError:
             return format_response("token expired", 403)
         except jwt.DecodeError:
-            return format_response("invalid token", 400)
+            return format_response("invalid token", 401)
 
-        value = func(*args, **kwargs)
+        token_data = {
+            "id": payload.get("uid"),
+            "is_admin": payload.get("adm")
+        }
+
+        value = func(token_data=token_data, *args, **kwargs)
         return value
     return wrapper_token_required
 
@@ -34,7 +39,7 @@ def admin_required(func):
         # Retrieves token and checks integrity
         scheme, token = request.headers.get("Authorization").split(sep=" ")
         if(not token):
-            return format_response("missing token", 400)
+            return format_response("missing token", 401)
         if(scheme != "Bearer"):
             return format_response("unsupported auth scheme", 400)
 
@@ -44,7 +49,7 @@ def admin_required(func):
         except jwt.ExpiredSignatureError:
             return format_response("token expired", 403)
         except jwt.DecodeError:
-            return format_response("invalid token", 400)
+            return format_response("invalid token", 401)
         
         # Check for admin permissions, if required but not present, return error
         if(payload.get("adm") == False):
