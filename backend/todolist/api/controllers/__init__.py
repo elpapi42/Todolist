@@ -1,6 +1,6 @@
 from flask import make_response, jsonify
 
-def format_response(message, status, message_type="error"):
+def format_response(message, status, message_type="message"):
     """ 
     Format error responses from the API 
 
@@ -12,7 +12,7 @@ def format_response(message, status, message_type="error"):
         status
     )
 
-from .user import UserController
+from .user import UserController, UserList
 
 
     
