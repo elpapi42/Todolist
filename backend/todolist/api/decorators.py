@@ -11,10 +11,18 @@ def token_required(func):
     """ Check if the client has the required token for access the api """
     @functools.wraps(func)
     def wrapper_token_required(*args, **kwargs):
-        # Retrieves token and checks integrity
-        scheme, token = request.headers.get("Authorization").split(sep=" ")
-        if(not token):
-            return format_response("missing token", 401)
+        # Retrieves token
+        auth_header = request.headers.get("Authorization")
+        if(not auth_header):
+            return format_response("missing auth header", 401)
+
+        # Check if auth header is correctly formated as "<Scheme> <token>" 
+        try:
+            scheme, token = auth_header.split(" ")
+        except:
+            return format_response("bad auth header", 400)
+
+        # Check for bearer scheme
         if(scheme != "Bearer"):
             return format_response("unsupported auth scheme", 400)
 
@@ -41,10 +49,18 @@ def admin_required(func):
     """ Check if the client has the required admin token for access the api """
     @functools.wraps(func)
     def wrapper_admin_required(*args, **kwargs):
-        # Retrieves token and checks integrity
-        scheme, token = request.headers.get("Authorization").split(sep=" ")
-        if(not token):
-            return format_response("missing token", 401)
+        # Retrieves token
+        auth_header = request.headers.get("Authorization")
+        if(not auth_header):
+            return format_response("missing auth header", 401)
+
+        # Check if auth header is correctly formated as "<Scheme> <token>" 
+        try:
+            scheme, token = auth_header.split(" ")
+        except:
+            return format_response("bad auth header", 400)
+
+        # Check for bearer scheme
         if(scheme != "Bearer"):
             return format_response("unsupported auth scheme", 400)
 
