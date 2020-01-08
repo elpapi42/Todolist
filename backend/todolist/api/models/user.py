@@ -11,13 +11,18 @@ class User(UserMixin, db.Model):
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
     email = db.Column(db.String(64), unique=True, nullable=False)
+    is_admin = db.Column(db.Boolean, default=False, nullable=False)
 
-    def __init__(self, email):
-        self.email = email
+    oauth = db.relationship("OAuth", backref="user", uselist=False)
+    tasks = db.relationship("Task", backref="user")
+
+    def __init__(self, email, is_admin=False):
         self.id = uuid.uuid4()
+        self.email = email
+        self.is_admin = is_admin
 
     def __repr__(self):
-        return "<email {}>".format(self.email)
+        return "<User: {}>".format(self.email)
 
     def get_id(self):
         return str(self.id)
