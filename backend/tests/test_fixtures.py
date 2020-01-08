@@ -45,7 +45,7 @@ def user():
             "scope": [""]
         }
 
-        oauth_token = OAuth("github", github_token, user.id, user)
+        oauth_token = OAuth("github", github_token, user.id)
         db.session.add(oauth_token)
 
         db.session.commit()
@@ -80,7 +80,7 @@ def admin():
         user.id = id
         db.session.add(user)
 
-        oauth_token = OAuth("local", None, user.id, user)
+        oauth_token = OAuth("local", None, user.id)
         db.session.add(oauth_token)
 
         db.session.commit()

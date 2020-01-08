@@ -13,12 +13,11 @@ class OAuth(OAuthConsumerMixin, db.Model):
 
     user_id = db.Column(UUID(as_uuid=True), db.ForeignKey("users.id"))
 
-    def __init__(self, provider, token, user_id, user):
+    def __init__(self, provider, token, user_id):
         self.id = uuid.uuid4()
         self.provider = provider
         self.token = token
         self.user_id = user_id
-        self.user = user
         
     def __repr__(self):
         return "<OAuth Token: {}>".format(self.token)

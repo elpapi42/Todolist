@@ -8,6 +8,7 @@ from flask import request, g
 from .controllers import format_response
 
 def token_required(func):
+    """ Check if the client has the required token for access the api """
     @functools.wraps(func)
     def wrapper_token_required(*args, **kwargs):
         # Retrieves token and checks integrity
@@ -37,6 +38,7 @@ def token_required(func):
     return wrapper_token_required
 
 def admin_required(func):
+    """ Check if the client has the required admin token for access the api """
     @functools.wraps(func)
     def wrapper_admin_required(*args, **kwargs):
         # Retrieves token and checks integrity
@@ -70,6 +72,7 @@ def admin_required(func):
     return wrapper_admin_required
 
 def authorization_required(func):
+    """ Check if the user has authorization for perform the requested action """
     @functools.wraps(func)
     def wrapper_authorization_required(*args, **kwargs):
         # Retrieves id and checks integrity
@@ -92,5 +95,26 @@ def authorization_required(func):
         value = func(user_id=id, *args, **kwargs)
         return value
     return wrapper_authorization_required
+
+def task_data_required(func):
+    """ Check if the request has the required data for create or edit a task """
+    @functools.wraps(func)
+    def wrapper_task_data_required(*args, **kwargs):
+        # Retrieves data from body
+        title = request.form.get("title")
+        description = request.form.get("description")
+        is_done = request.form.get("is_done") in ["True", "true", "1"]
+
+        task_data = {
+            "title": title,
+            "description": description,
+            "is_done": is_done
+        }
+
+        value = func(task_data=task_data, *args, **kwargs)
+        return value
+    return wrapper_task_data_required
+
+
 
 
