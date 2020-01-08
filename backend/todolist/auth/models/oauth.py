@@ -1,18 +1,18 @@
 import uuid
 
-from flask_dance.consumer.storage.sqla import OAuthConsumerMixin
 from sqlalchemy.dialects.postgresql import UUID
+from flask_dance.consumer.storage.sqla import OAuthConsumerMixin
 
 from ... import db
-from ...api.models import User
 
 class OAuth(OAuthConsumerMixin, db.Model):
     """ Storage for oauth tokens """
     __tablename__ = "oauth_tokens"
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
-    user_id = db.Column(UUID(as_uuid=True), db.ForeignKey(User.id))
-    user = db.relationship(User, uselist=False)
+
+    user_id = db.Column(UUID(as_uuid=True), db.ForeignKey("users.id"))
+    user = db.relationship("User", uselist=False)
 
     def __init__(self, provider, token, user_id, user):
         self.id = uuid.uuid4()
