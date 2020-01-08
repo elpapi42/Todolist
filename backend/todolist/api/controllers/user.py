@@ -1,6 +1,4 @@
-import uuid
-
-from validator_collection.checkers import is_uuid, is_email
+from validator_collection.checkers import is_email
 from flask import request, make_response, jsonify, g
 from flask_restful import Resource
 

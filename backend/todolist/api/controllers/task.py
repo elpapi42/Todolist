@@ -1,21 +1,14 @@
-import uuid
-
-from validator_collection.checkers import is_uuid
 from flask import request, make_response, jsonify
 from flask_restful import Resource
 
 from ... import db
-from ..models import User, Task
-from . import format_response
-from ..decorators import token_required, admin_required, authorization_required, task_data_required
+from ..models import Task
+from ..decorators import token_required, admin_required, authorization_required
 
 class TaskList(Resource):
     """ Get tasks and create new task """
 
-    method_decorators = {
-        "get": [authorization_required, token_required],
-        "post": [authorization_required, token_required]
-    }
+    method_decorators = [authorization_required, token_required]
 
     def get(self, user_id, *args, **kwargs):
         tasks = Task.query.filter(Task.user_id == user_id).all()

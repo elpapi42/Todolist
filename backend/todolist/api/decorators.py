@@ -112,24 +112,7 @@ def authorization_required(func):
         return value
     return wrapper_authorization_required
 
-def task_data_required(func):
-    """ Check if the request has the required data for create or edit a task """
-    @functools.wraps(func)
-    def wrapper_task_data_required(*args, **kwargs):
-        # Retrieves data from body
-        title = request.form.get("title")
-        description = request.form.get("description")
-        is_done = request.form.get("is_done") in ["True", "true", "1"]
-
-        task_data = {
-            "title": title,
-            "description": description,
-            "is_done": is_done
-        }
-
-        value = func(task_data=task_data, *args, **kwargs)
-        return value
-    return wrapper_task_data_required
+    
 
 
 
