@@ -99,9 +99,9 @@ def authorization_required(func):
         if(id == "current"):
             id = g.token_data.get("id")
 
-        # Check if supplied id complains with UUID standards, or "current" url self-identifier
+        # Check if supplied id complains with UUID standards
         if(not is_uuid(id)):
-            return format_response("invalid id", 422)
+            return format_response("invalid user id", 422)
 
         # If the token is not owned by an admin, and the url id dont match with the id of the supplied token owner
         # Cancel the operation because a user can only make ops on his data
@@ -111,6 +111,21 @@ def authorization_required(func):
         value = func(user_id=id, *args, **kwargs)
         return value
     return wrapper_authorization_required
+
+def task_id_required(func):
+    """ Check if the user has authorization for perform the requested action """
+    @functools.wraps(func)
+    def wrapper_task_id_required(*args, **kwargs):
+        # Retrieves id and checks integrity
+        id = request.view_args.get("t_id")
+
+        # Check if supplied id complains with UUID standards
+        if(not is_uuid(id)):
+            return format_response("invalid task id", 422)
+
+        value = func(task_id=id, *args, **kwargs)
+        return value
+    return wrapper_task_id_required
 
     
 

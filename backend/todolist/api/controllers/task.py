@@ -3,7 +3,72 @@ from flask_restful import Resource
 
 from ... import db
 from ..models import Task
-from ..decorators import token_required, admin_required, authorization_required
+from . import format_response
+from ..decorators import token_required, authorization_required, task_id_required
+
+class TaskController(Resource):
+    """ Get, Edit or Delete Task """
+
+    method_decorators = [task_id_required, authorization_required, token_required]
+
+    def get(self, task_id, *args, **kwargs):
+        # Retrieve task
+        task = Task.query.filter(Task.id == task_id).first()
+        if(not task):
+            return format_response("task not found", 404)
+
+        return make_response(
+            jsonify({
+                "id": task.id,
+                "title": task.title,
+                "description": task.description,
+                "is_done": task.is_done
+            }),
+            200
+        )
+
+    def put(self, task_id, *args, **kwargs):
+        # Retrieve task
+        task = Task.query.filter(Task.id == task_id).first()
+        if(not task):
+            return format_response("task not found", 404)
+
+        # Update title
+        title = request.form.get("title")
+        if(title):
+            task.title = title
+
+        # Update description
+        description = request.form.get("description")
+        if(description):
+            task.description = description
+
+        # Update is_done
+        is_done = request.form.get("is_done") in ["True", "true", "1"]
+        if(is_done):
+            task.is_done = is_done
+
+        db.session.commit()
+
+        return make_response(
+            jsonify({
+                "id": task.id,
+                "title": task.title,
+                "description": task.description,
+                "is_done": task.is_done
+            }),
+            200
+        )
+
+    def delete(self, task_id, *args, **kwargs):
+        # Retrieve task
+        task = Task.query.filter(Task.id == task_id).delete()
+        if(not task):
+            return format_response("task not found", 404)
+
+        db.session.commit()
+        
+        return format_response("task deleted", 204)
 
 class TaskList(Resource):
     """ Get tasks and create new task """

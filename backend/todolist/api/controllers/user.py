@@ -17,7 +17,7 @@ class UserController(Resource):
         # Tries to retreive user by id
         user = User.query.filter(User.id == user_id).first()
         if(not user):
-            return format_response("not found", 404)
+            return format_response("user not found", 404)
 
         return make_response(
             jsonify({
@@ -33,7 +33,7 @@ class UserController(Resource):
         # Tries to retreive user by id
         user = db.session.query(User).filter(User.id == user_id).first()
         if(not user):
-            return format_response("not found", 404)
+            return format_response("user not found", 404)
 
         # If user is admin, cant be edited by other admin, but by himslef
         if(user.is_admin and (user.id != token_data.get("id"))):
@@ -57,7 +57,7 @@ class UserController(Resource):
         # Tries to retreive user by id
         user = db.session.query(User).filter(User.id == user_id).first()
         if(not user):
-            return format_response("not found", 404)
+            return format_response("user not found", 404)
 
         # If user is admin, cant be deleted by other admin, but by himslef
         if(user.is_admin and (user.id != token_data.get("id"))):
