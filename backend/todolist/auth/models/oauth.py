@@ -21,4 +21,4 @@ class OAuth(OAuthConsumerMixin, db.Model):
         self.user = user
         
     def __repr__(self):
-        return "<user {}>".format(self.user.email)
+        return "<OAuth Token: {}>".format(self.token)
