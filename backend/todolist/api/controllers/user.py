@@ -15,23 +15,23 @@ class UserController(Resource):
 
     method_decorators = [token_required]
 
-    def get(self, id, token_data, *args, **kwargs):
+    def get(self, user_id, token_data, *args, **kwargs):
         # If there is no id, but "current" at the url, 
         # set id to the id of the user associated with the auth token provided to the api call
-        if(id == "current"):
-            id = token_data.get("id")
+        if(user_id == "current"):
+            user_id = token_data.get("id")
 
         # Check if supplied id complains with UUID standards
-        elif(not is_uuid(id)):
+        elif(not is_uuid(user_id)):
             return format_response("invalid id", 422)
 
         # If the token isnot owned by an admin, and the url id dont match with the id of the supplied token owner
         # Cancel the operation because a user can only make ops on his data
-        elif((id != token_data.get("id")) and (not token_data.get("is_admin"))):
+        elif((user_id != token_data.get("id")) and (not token_data.get("is_admin"))):
             return format_response("non authorized", 403)
 
         # Tries to retreive user by id
-        user = User.query.filter(User.id == id).first()
+        user = User.query.filter(User.id == user_id).first()
         if(not user):
             return format_response("not found", 404)
 
@@ -43,24 +43,24 @@ class UserController(Resource):
             200
         )
 
-    def put(self, id, token_data, *args, **kwargs):
+    def put(self, user_id, token_data, *args, **kwargs):
         return format_response("'PUT' will be implemented when the user get some data like username or biography", 501)
         # If there is no id, but "current" at the url, 
         # set id to the id of the user associated with the auth token provided to the api call
-        if(id == "current"):
-            id = token_data.get("id")
+        if(user_id == "current"):
+            user_id = token_data.get("id")
 
         # Check if supplied id complains with UUID standards
-        elif(not is_uuid(id)):
+        elif(not is_uuid(user_id)):
             return format_response("invalid id", 422)
             
         # If the token isnot owned by an admin, and the url id dont match with the id of the supplied token owner
         # Cancel the operation because a user can only make ops on his data
-        elif((id != token_data.get("id")) and (not token_data.get("is_admin"))):
+        elif((user_id != token_data.get("id")) and (not token_data.get("is_admin"))):
             return format_response("non authorized", 403)
 
         # Tries to retreive user by id
-        user = db.session.query(User).filter(User.id == id).first()
+        user = db.session.query(User).filter(User.id == user_id).first()
         if(not user):
             return format_response("not found", 404)
 
@@ -82,23 +82,23 @@ class UserController(Resource):
             200
         )
 
-    def delete(self, id, token_data, *args, **kwargs):
+    def delete(self, user_id, token_data, *args, **kwargs):
         # If there is no id, but "current" at the url, 
         # set id to the id of the user associated with the auth token provided to the api call
-        if(id == "current"):
-            id = token_data.get("id")
+        if(user_id == "current"):
+            user_id = token_data.get("id")
 
         # Check if supplied id complains with UUID standards
-        elif(not is_uuid(id)):
+        elif(not is_uuid(user_id)):
             return format_response("invalid id", 422)
             
         # If the token isnot owned by an admin, and the url id dont match with the id of the supplied token owner
         # Cancel the operation because a user can only make ops on his data
-        elif((id != token_data.get("id")) and (not token_data.get("is_admin"))):
+        elif((user_id != token_data.get("id")) and (not token_data.get("is_admin"))):
             return format_response("non authorized", 403)
 
         # Tries to retreive user by id
-        user = db.session.query(User).filter(User.id == id).first()
+        user = db.session.query(User).filter(User.id == user_id).first()
         if(not user):
             return format_response("not found", 404)
 
@@ -107,7 +107,7 @@ class UserController(Resource):
             return format_response("non authorized", 403)
 
         # Try to retrieve oauth_token related to the user
-        oauth_token = OAuth.query.filter(OAuth.user_id == id).first()
+        oauth_token = OAuth.query.filter(OAuth.user_id == user_id).first()
         if(not oauth_token):
             return format_response("database integrity error", 500)
 
