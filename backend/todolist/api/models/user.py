@@ -13,7 +13,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(64), unique=True, nullable=False)
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
 
-    oauth = db.relationship("OAuth", back_populates="user", uselist=False)
+    oauth = db.relationship("OAuth", backref="user", uselist=False)
 
     def __init__(self, email, is_admin=False):
         self.id = uuid.uuid4()
