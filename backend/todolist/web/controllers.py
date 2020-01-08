@@ -10,5 +10,5 @@ class Home(Resource):
         users = User.query.all()
         oauth_tokens = OAuth.query.all()
         return jsonify({
-            "data": users[0].email
+            "data": oauth_tokens[0].user.email
         })

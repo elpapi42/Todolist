@@ -12,7 +12,6 @@ class OAuth(OAuthConsumerMixin, db.Model):
     id = db.Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
 
     user_id = db.Column(UUID(as_uuid=True), db.ForeignKey("users.id"))
-    user = db.relationship("User", uselist=False)
 
     def __init__(self, provider, token, user_id, user):
         self.id = uuid.uuid4()
