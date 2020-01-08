@@ -1,35 +1,21 @@
 import uuid
 
 from validator_collection.checkers import is_uuid, is_email
-from flask import request, make_response, jsonify
+from flask import request, make_response, jsonify, g
 from flask_restful import Resource
 
 from ... import db
 from ..models import User
 from ...auth.models import OAuth
 from . import format_response
-from ..decorators import token_required, admin_required
+from ..decorators import token_required, admin_required, authorization_required
 
 class UserController(Resource):
     """ Interact with Users DataBase Entries """
 
-    method_decorators = [token_required]
+    method_decorators = [authorization_required, token_required]
 
-    def get(self, user_id, token_data, *args, **kwargs):
-        # If there is no id, but "current" at the url, 
-        # set id to the id of the user associated with the auth token provided to the api call
-        if(user_id == "current"):
-            user_id = token_data.get("id")
-
-        # Check if supplied id complains with UUID standards
-        elif(not is_uuid(user_id)):
-            return format_response("invalid id", 422)
-
-        # If the token isnot owned by an admin, and the url id dont match with the id of the supplied token owner
-        # Cancel the operation because a user can only make ops on his data
-        elif((user_id != token_data.get("id")) and (not token_data.get("is_admin"))):
-            return format_response("non authorized", 403)
-
+    def get(self, user_id, *args, **kwargs):
         # Tries to retreive user by id
         user = User.query.filter(User.id == user_id).first()
         if(not user):
@@ -43,28 +29,15 @@ class UserController(Resource):
             200
         )
 
-    def put(self, user_id, token_data, *args, **kwargs):
-        return format_response("'PUT' will be implemented when the user get some data like username or biography", 501)
-        # If there is no id, but "current" at the url, 
-        # set id to the id of the user associated with the auth token provided to the api call
-        if(user_id == "current"):
-            user_id = token_data.get("id")
-
-        # Check if supplied id complains with UUID standards
-        elif(not is_uuid(user_id)):
-            return format_response("invalid id", 422)
-            
-        # If the token isnot owned by an admin, and the url id dont match with the id of the supplied token owner
-        # Cancel the operation because a user can only make ops on his data
-        elif((user_id != token_data.get("id")) and (not token_data.get("is_admin"))):
-            return format_response("non authorized", 403)
+    def put(self, user_id, *args, **kwargs):
+        return format_response("PUT will be implemented when the user get some data like username or biography", 501)
 
         # Tries to retreive user by id
         user = db.session.query(User).filter(User.id == user_id).first()
         if(not user):
             return format_response("not found", 404)
 
-        # If user is admin, cant be edited by other user or admin, but by himslef
+        # If user is admin, cant be edited by other admin, but by himslef
         if(user.is_admin and (user.id != token_data.get("id"))):
             return format_response("non authorized", 403)
 
@@ -82,27 +55,13 @@ class UserController(Resource):
             200
         )
 
-    def delete(self, user_id, token_data, *args, **kwargs):
-        # If there is no id, but "current" at the url, 
-        # set id to the id of the user associated with the auth token provided to the api call
-        if(user_id == "current"):
-            user_id = token_data.get("id")
-
-        # Check if supplied id complains with UUID standards
-        elif(not is_uuid(user_id)):
-            return format_response("invalid id", 422)
-            
-        # If the token isnot owned by an admin, and the url id dont match with the id of the supplied token owner
-        # Cancel the operation because a user can only make ops on his data
-        elif((user_id != token_data.get("id")) and (not token_data.get("is_admin"))):
-            return format_response("non authorized", 403)
-
+    def delete(self, user_id, *args, **kwargs):
         # Tries to retreive user by id
         user = db.session.query(User).filter(User.id == user_id).first()
         if(not user):
             return format_response("not found", 404)
 
-        # If user is admin, cant be edited by other user or admin, but by himslef
+        # If user is admin, cant be deleted by other admin, but by himslef
         if(user.is_admin and (user.id != token_data.get("id"))):
             return format_response("non authorized", 403)
 
@@ -127,17 +86,18 @@ class UserList(Resource):
         # WARNING: This must implement pagination in the future!
         users = User.query.all()
 
-        users_list = {}
+        users_list = []
 
         for user in users:
             # Create dictionary
             user_data = {
+                "id": user.id,
                 "email": user.email,
                 "is_admin": user.is_admin
             }
 
             # Append user to the output dictionary
-            users_list[str(user.id)] = user_data
+            users_list.append(user_data)
 
         return make_response(
             jsonify(users_list),
