@@ -297,6 +297,38 @@ def test_update_task_by_id_as_complete(instance, user):
     assert response.status_code == 200
     assert response.json.get("is_done") == True
 
+def test_update_task_by_id_as_uncomplete(instance, user):
+    # Create Task
+    response = instance.post(
+        "/api/users/current/tasks/",
+        data={
+            "title": "test task 01",
+            "description": "this is a test task",
+        },
+        headers={"Authorization": user.get("token")}
+    )
+
+    task_id = response.json.get("id")
+
+    response = instance.put(
+        "/api/users/current/tasks/{}/".format(task_id),
+        data={
+            "is_done": True
+        },
+        headers={"Authorization": user.get("token")}
+    )
+
+    response = instance.put(
+        "/api/users/current/tasks/{}/".format(task_id),
+        data={
+            "is_done": False
+        },
+        headers={"Authorization": user.get("token")}
+    )
+
+    assert response.status_code == 200
+    assert response.json.get("is_done") == False
+
 def test_update_task_by_id_with_bad_authorization(instance, user):
     # Create Task
     response = instance.post(

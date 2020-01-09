@@ -44,8 +44,8 @@ class TaskController(Resource):
             task.description = description
 
         # Update is_done
-        is_done = request.form.get("is_done") in ["True", "true", "1"]
-        if(is_done):
+        is_done = (request.form.get("is_done") in ["True", "true", "1"]) if request.form.get("is_done") else None
+        if(is_done != None):
             task.is_done = is_done
 
         db.session.commit()
