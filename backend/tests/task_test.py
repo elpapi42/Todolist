@@ -71,6 +71,102 @@ def test_get_tasks(instance, user):
     assert response.status_code == 200
     assert response.json[0].get("description") == "this is a test task"
 
+def test_get_complete_tasks(instance, user):
+    # Create Task
+    response = instance.post(
+        "/api/users/current/tasks/",
+        data={
+            "title": "test task 01",
+            "description": "this is a test task",
+        },
+        headers={"Authorization": user.get("token")}
+    )
+
+    task_id = response.json.get("id")
+
+    response = instance.put(
+        "/api/users/current/tasks/{}/".format(task_id),
+        data={
+            "is_done": "True"
+        },
+        headers={"Authorization": user.get("token")}
+    )
+
+    response = instance.get(
+        "/api/users/current/tasks/?done={}".format("1"),
+        headers={"Authorization": user.get("token")}
+    )
+
+    assert response.status_code == 200
+    assert response.json[0].get("description") == "this is a test task"
+
+def test_get_uncomplete_tasks(instance, user):
+    # Create Task
+    response = instance.post(
+        "/api/users/current/tasks/",
+        data={
+            "title": "test task 01",
+            "description": "this is a test task",
+        },
+        headers={"Authorization": user.get("token")}
+    )
+
+    response = instance.get(
+        "/api/users/current/tasks/?done={}".format("0"),
+        headers={"Authorization": user.get("token")}
+    )
+
+    assert response.status_code == 200
+    assert response.json[0].get("description") == "this is a test task"
+
+def test_get_zero_complete_tasks(instance, user):
+    # Create Task
+    response = instance.post(
+        "/api/users/current/tasks/",
+        data={
+            "title": "test task 01",
+            "description": "this is a test task",
+        },
+        headers={"Authorization": user.get("token")}
+    )
+
+    response = instance.get(
+        "/api/users/current/tasks/?done={}".format("1"),
+        headers={"Authorization": user.get("token")}
+    )
+
+    assert response.status_code == 200
+    assert len(response.json) == 0
+
+def test_get_zero_uncomplete_tasks(instance, user):
+    # Create Task
+    response = instance.post(
+        "/api/users/current/tasks/",
+        data={
+            "title": "test task 01",
+            "description": "this is a test task",
+        },
+        headers={"Authorization": user.get("token")}
+    )
+
+    task_id = response.json.get("id")
+
+    response = instance.put(
+        "/api/users/current/tasks/{}/".format(task_id),
+        data={
+            "is_done": "True"
+        },
+        headers={"Authorization": user.get("token")}
+    )
+
+    response = instance.get(
+        "/api/users/current/tasks/?done={}".format("0"),
+        headers={"Authorization": user.get("token")}
+    )
+
+    assert response.status_code == 200
+    assert len(response.json) == 0
+
 def test_get_tasks_without_authorization(instance, user, admin):
     # Create Task
     response = instance.post(
