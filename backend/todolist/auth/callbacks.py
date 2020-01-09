@@ -30,7 +30,7 @@ def github_logged_in(blueprint, token):
     try:
         oauth_token = OAuth.query.filter(OAuth.user_id == user.id).one()
     except NoResultFound:
-        oauth_token = OAuth(blueprint.name, token, user.id, user)
+        oauth_token = OAuth(blueprint.name, token, user.id)
         db.session.add(oauth_token)
 
     db.session.commit()
