@@ -76,7 +76,16 @@ class TaskList(Resource):
     method_decorators = [authorization_required, token_required]
 
     def get(self, user_id, *args, **kwargs):
-        tasks = Task.query.filter(Task.user_id == user_id).all()
+        # Check if the client want to get the task with done=True
+        # If true, return all the completed tasks
+        # If false, return all the uncomplete tasks
+        # If None, return all the tasks
+        return_done = (request.args.get("done") in ["True", "true", "1"]) if request.args.get("done") else None
+
+        if(return_done == None):
+            tasks = Task.query.filter(Task.user_id == user_id).all()
+        else:
+            tasks = Task.query.filter(Task.user_id == user_id, Task.is_done == return_done).all()
 
         tasks_list = []
 
