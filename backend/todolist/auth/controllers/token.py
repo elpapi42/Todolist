@@ -23,7 +23,6 @@ class IssueToken(Resource):
         token = jwt.encode(jwt_payload, os.environ["SECRET_KEY"], algorithm="HS256").decode("utf-8")
 
         return jsonify({
-            "id": current_user.id,
             "token": "Bearer {}".format(token)
         })
         
