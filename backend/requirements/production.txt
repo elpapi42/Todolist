@@ -11,3 +11,4 @@ sqlalchemy==1.3.12
 sqlalchemy-utils
 blinker
 pyjwt
+gunicorn
