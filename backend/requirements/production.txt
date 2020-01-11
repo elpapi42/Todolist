@@ -4,6 +4,7 @@ flask-sqlalchemy
 flask-dance
 flask-login
 flask-migrate
+flask-cors
 validator_collection
 python-dotenv
 sqlalchemy==1.3.12
