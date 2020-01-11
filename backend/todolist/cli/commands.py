@@ -14,6 +14,11 @@ from ..api.models import User
 @click.argument("email")
 def make_user_admin(email):
 
+    admins = User.query.filter(User.is_admin == True).all()
+    if(len(admins) > 0):
+        print("Admins Already Registered, Contact Them for Get Admin Permissions")
+        return False
+
     if(not is_email(email)):
         print("Invalid Email")
         return False
@@ -26,7 +31,7 @@ def make_user_admin(email):
     user.is_admin = True
     db.session.commit()
     print("Now {} has Admin Access".format(email))
-    
+
     return True
     
     
