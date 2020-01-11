@@ -12,3 +12,4 @@ sqlalchemy-utils
 blinker
 pyjwt
 gunicorn
+psycopg2
