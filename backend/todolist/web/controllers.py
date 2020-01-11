@@ -7,8 +7,4 @@ from ..auth.models import OAuth
 class Home(Resource):
     """ Web Home Page """
     def get(self):
-        users = User.query.all()
-        oauth_tokens = OAuth.query.all()
-        return jsonify({
-            "data": users[0].tasks[0].title
-        })
+        return "Home Page"
