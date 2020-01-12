@@ -3,11 +3,10 @@ from datetime import datetime
 import pytz
 
 from sqlalchemy.dialects.postgresql import UUID
-from flask_login import UserMixin
 
 from ... import db
 
-class User(UserMixin, db.Model):
+class User(db.Model):
     """ Define User Fields """
     __tablename__ = "users"
 

@@ -1,11 +1,10 @@
 import uuid
 
 from sqlalchemy.dialects.postgresql import UUID
-from flask_dance.consumer.storage.sqla import OAuthConsumerMixin
 
 from ... import db
 
-class OAuth(OAuthConsumerMixin, db.Model):
+class OAuth(db.Model):
     """ Storage for oauth tokens """
     __tablename__ = "oauth_tokens"
 
