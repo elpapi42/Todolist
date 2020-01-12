@@ -9,7 +9,7 @@ def test_get_users_as_user(instance, user):
         "/api/users/",
         headers={"Authorization": user.get("token")}
     )
-    assert response.status_code == 401
+    assert response.status_code == 403
 
 def test_get_users_as_admin(instance, admin):
     response = instance.get(
@@ -57,13 +57,6 @@ def test_retrieve_current_user(instance, user):
 def test_post_user(instance, user):
     response = instance.post(
         "/api/users/current/",
-        headers={"Authorization": user.get("token")}
-    )
-    assert response.status_code == 405
-
-def test_put_not_allowed_for_users_endpoint(instance, user):
-    response = instance.put(
-        "/api/users/",
         headers={"Authorization": user.get("token")}
     )
     assert response.status_code == 405

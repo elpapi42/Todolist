@@ -1,19 +1,19 @@
-from flask import request, make_response, jsonify
+from flask import request, make_response, jsonify, g
 from flask_restful import Resource
 
 from ... import db
 from ..models import Task
 from . import format_response
-from ..decorators import token_required, authorization_required, task_id_required
+from ..decorators import token_required, authorization_required, task_required
 
 class TaskController(Resource):
     """ Get, Edit or Delete Task """
 
-    method_decorators = [task_id_required, authorization_required, token_required]
+    method_decorators = [task_required, authorization_required, token_required]
 
     def get(self, task_id, *args, **kwargs):
         # Retrieve task
-        task = Task.query.filter(Task.id == task_id).first()
+        task = Task.query.get(task_id)
         if(not task):
             return format_response("task not found", 404)
 
@@ -22,14 +22,14 @@ class TaskController(Resource):
                 "id": task.id,
                 "title": task.title,
                 "description": task.description,
-                "is_done": task.is_done
+                "done": task.done
             }),
             200
         )
 
     def put(self, task_id, *args, **kwargs):
         # Retrieve task
-        task = Task.query.filter(Task.id == task_id).first()
+        task = Task.query.get(task_id)
         if(not task):
             return format_response("task not found", 404)
 
@@ -43,10 +43,10 @@ class TaskController(Resource):
         if(description):
             task.description = description
 
-        # Update is_done
-        is_done = (request.form.get("is_done") in ["True", "true", "1"]) if request.form.get("is_done") else None
-        if(is_done != None):
-            task.is_done = is_done
+        # Update done
+        done = (request.form.get("done") in ["True", "true", "1"]) if request.form.get("done") else None
+        if(done != None):
+            task.done = done
 
         db.session.commit()
 
@@ -55,17 +55,18 @@ class TaskController(Resource):
                 "id": task.id,
                 "title": task.title,
                 "description": task.description,
-                "is_done": task.is_done
+                "done": task.done
             }),
             200
         )
 
     def delete(self, task_id, *args, **kwargs):
         # Retrieve task
-        task = Task.query.filter(Task.id == task_id).delete()
+        task = Task.query.get(task_id)
         if(not task):
             return format_response("task not found", 404)
 
+        db.session.delete(task)
         db.session.commit()
         
         return format_response("task deleted", 204)
@@ -82,10 +83,11 @@ class TaskList(Resource):
         # If None, return all the tasks
         return_done = (request.args.get("done") in ["True", "true", "1"]) if request.args.get("done") else None
 
+        # Retrieve Tasks
         if(return_done == None):
             tasks = Task.query.filter(Task.user_id == user_id).all()
         else:
-            tasks = Task.query.filter(Task.user_id == user_id, Task.is_done == return_done).all()
+            tasks = Task.query.filter(Task.user_id == user_id, Task.done == return_done).all()
 
         tasks_list = []
 
@@ -95,7 +97,7 @@ class TaskList(Resource):
                 "id": task.id,
                 "title": task.title,
                 "description": task.description,
-                "is_done": task.is_done
+                "done": task.done
             }
 
             # Append user to the output dictionary
@@ -129,7 +131,7 @@ class TaskList(Resource):
                 "id": task.id,
                 "title": task.title,
                 "description": task.description,
-                "is_done": task.is_done
+                "done": task.done
             }),
             201
         )

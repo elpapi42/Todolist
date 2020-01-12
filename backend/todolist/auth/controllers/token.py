@@ -1,6 +1,7 @@
 import jwt
 import datetime
 import os
+import pytz
 
 from flask import jsonify
 from flask_restful import Resource
@@ -15,11 +16,12 @@ class IssueToken(Resource):
         jwt_payload = {
             "uid": str(current_user.id),
             "eml": current_user.email,
-            "adm": current_user.is_admin,
+            "adm": current_user.admin,
+            "urt": str(current_user.created),
             "iat": datetime.datetime.utcnow(),
             "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=24),
         }
-
+        
         token = jwt.encode(jwt_payload, os.environ["SECRET_KEY"], algorithm="HS256").decode("utf-8")
 
         return jsonify({
