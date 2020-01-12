@@ -22,7 +22,7 @@ class TaskController(Resource):
                 "id": task.id,
                 "title": task.title,
                 "description": task.description,
-                "is_done": task.is_done
+                "done": task.done
             }),
             200
         )
@@ -44,9 +44,9 @@ class TaskController(Resource):
             task.description = description
 
         # Update is_done
-        is_done = (request.form.get("is_done") in ["True", "true", "1"]) if request.form.get("is_done") else None
-        if(is_done != None):
-            task.is_done = is_done
+        done = (request.form.get("done") in ["True", "true", "1"]) if request.form.get("done") else None
+        if(done != None):
+            task.done = done
 
         db.session.commit()
 
@@ -55,7 +55,7 @@ class TaskController(Resource):
                 "id": task.id,
                 "title": task.title,
                 "description": task.description,
-                "is_done": task.is_done
+                "done": task.done
             }),
             200
         )
@@ -85,7 +85,7 @@ class TaskList(Resource):
         if(return_done == None):
             tasks = Task.query.filter(Task.user_id == user_id).all()
         else:
-            tasks = Task.query.filter(Task.user_id == user_id, Task.is_done == return_done).all()
+            tasks = Task.query.filter(Task.user_id == user_id, Task.done == return_done).all()
 
         tasks_list = []
 
@@ -95,7 +95,7 @@ class TaskList(Resource):
                 "id": task.id,
                 "title": task.title,
                 "description": task.description,
-                "is_done": task.is_done
+                "done": task.done
             }
 
             # Append user to the output dictionary
@@ -129,7 +129,7 @@ class TaskList(Resource):
                 "id": task.id,
                 "title": task.title,
                 "description": task.description,
-                "is_done": task.is_done
+                "done": task.done
             }),
             201
         )
