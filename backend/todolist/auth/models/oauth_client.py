@@ -9,7 +9,7 @@ class OAuthClient(db.Model):
     __tablename__ = "oauth_clients"
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
-    client_id = db.Column(db.String, nullable=False)
+    client_id = db.Column(db.String, unique=True, nullable=False)
     client_secret = db.Column(db.String, nullable=False)
     client_handle = db.Column(db.String(16), nullable=False)
 
