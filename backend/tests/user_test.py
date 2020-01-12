@@ -61,13 +61,6 @@ def test_post_user(instance, user):
     )
     assert response.status_code == 405
 
-def test_put_not_allowed_for_users_endpoint(instance, user):
-    response = instance.put(
-        "/api/users/",
-        headers={"Authorization": user.get("token")}
-    )
-    assert response.status_code == 405
-
 def test_delete_other_user(instance, user, admin):
     response = instance.delete(
         "/api/users/{id}/".format(id=admin.get("id")),
