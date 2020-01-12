@@ -11,9 +11,11 @@ class TaskController(Resource):
 
     method_decorators = [task_required, authorization_required, token_required]
 
-    def get(self, *args, **kwargs):
+    def get(self, task_id, *args, **kwargs):
         # Retrieve task
-        task = g.task
+        task = Task.query.get(task_id)
+        if(not task):
+            return format_response("task not found", 404)
 
         return make_response(
             jsonify({
@@ -25,9 +27,11 @@ class TaskController(Resource):
             200
         )
 
-    def put(self, *args, **kwargs):
+    def put(self, task_id, *args, **kwargs):
         # Retrieve task
-        task = g.task
+        task = Task.query.get(task_id)
+        if(not task):
+            return format_response("task not found", 404)
 
         # Update title
         title = request.form.get("title")
@@ -56,9 +60,11 @@ class TaskController(Resource):
             200
         )
 
-    def delete(self, *args, **kwargs):
+    def delete(self, task_id, *args, **kwargs):
         # Retrieve task
-        task = g.task
+        task = Task.query.get(task_id)
+        if(not task):
+            return format_response("task not found", 404)
 
         db.session.delete(task)
         db.session.commit()
@@ -70,19 +76,18 @@ class TaskList(Resource):
 
     method_decorators = [authorization_required, token_required]
 
-    def get(self, *args, **kwargs):
+    def get(self, user_id, *args, **kwargs):
         # Check if the client want to get the task with done=True
         # If true, return all the completed tasks
         # If false, return all the uncomplete tasks
         # If None, return all the tasks
         return_done = (request.args.get("done") in ["True", "true", "1"]) if request.args.get("done") else None
 
-        user = g.user
-
+        # Retrieve Tasks
         if(return_done == None):
-            tasks = user.tasks
+            tasks = Task.query.filter(Task.user_id == user_id).all()
         else:
-            tasks = Task.query.filter(Task.user_id == user.id, Task.done == return_done).all()
+            tasks = Task.query.filter(Task.user_id == user_id, Task.done == return_done).all()
 
         tasks_list = []
 
@@ -103,7 +108,7 @@ class TaskList(Resource):
             200
         )
 
-    def post(self, *args, **kwargs):
+    def post(self, user_id, *args, **kwargs):
         # Retrieves data from body
         title = request.form.get("title")
         description = request.form.get("description")
@@ -113,7 +118,7 @@ class TaskList(Resource):
             return make_response("missing title", 400)
 
         # Create task and associate it with the user
-        task = Task(title, g.user.id)
+        task = Task(title, user_id)
 
         # Set description, if there is one in the request body
         task.description = description if description else ""

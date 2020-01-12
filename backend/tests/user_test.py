@@ -9,7 +9,7 @@ def test_get_users_as_user(instance, user):
         "/api/users/",
         headers={"Authorization": user.get("token")}
     )
-    assert response.status_code == 401
+    assert response.status_code == 403
 
 def test_get_users_as_admin(instance, admin):
     response = instance.get(

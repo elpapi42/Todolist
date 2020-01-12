@@ -13,8 +13,11 @@ class UserController(Resource):
 
     method_decorators = [authorization_required, token_required]
 
-    def get(self, *args, **kwargs):
-        user = g.user
+    def get(self, user_id, *args, **kwargs):
+        # Retrieves user
+        user = User.query.get(user_id)
+        if(not user):
+            return format_response("user not found", 404)
 
         return make_response(
             jsonify({
@@ -25,14 +28,13 @@ class UserController(Resource):
             200
         )
 
-    def put(self, *args, **kwargs):
+    def put(self, user_id, *args, **kwargs):
         return format_response("PUT will be implemented when the user get some data like username or biography", 501)
 
-        user = g.user
-
-        # If user is admin, cant be edited by other admin, but by himslef
-        if(user.is_admin and (user.id != token_data.get("id"))):
-            return format_response("non authorized", 403)
+        # Retrieves user
+        user = User.query.get(user_id)
+        if(not user):
+            return format_response("user not found", 404)
 
         # Edit user data from here
 
@@ -48,13 +50,11 @@ class UserController(Resource):
             200
         )
 
-    def delete(self, *args, **kwargs):
-        # Tries to retreive user by id
-        user = g.user
-
-        # If user is admin, cant be deleted by other admin, but by himslef
-        if(user.admin and (user.id != token_data.get("id"))):
-            return format_response("non authorized", 403)
+    def delete(self, user_id, *args, **kwargs):
+        # Retrieves user
+        user = User.query.get(user_id)
+        if(not user):
+            return format_response("user not found", 404)
 
         # Try to retrieve oauth_token related to the user
         oauth_token = user.oauth

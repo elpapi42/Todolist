@@ -36,26 +36,22 @@ def token_required(func):
         except jwt.DecodeError:
             return format_response("invalid token", 401)
 
-        user = User.query.filter(User.id == uuid.UUID(payload.get("uid"))).first()
-        if(not user):
-            return format_response("user not found", 404)
-
-        g.user = user
+        g.token_payload = payload
 
         value = func(*args, **kwargs)
         return value
     return wrapper_token_required
 
 def admin_required(func):
-    """ Check if the client has the required admin token for access the api """
+    """ Check if the client has the required admin token for access the endpoint """
     @functools.wraps(func)
     def wrapper_admin_required(*args, **kwargs):
         try:
-            user = g.user
+            token_payload = g.token_payload
         except:
             raise Exception('admin_required requires token_required decorator as prerequisite')
 
-        if(not user.admin):
+        if(not token_payload.get("adm")):
             return format_response("non authorized", 403)
 
         value = func(*args, **kwargs)
@@ -66,34 +62,29 @@ def authorization_required(func):
     """ Check if the user has authorization for perform the requested action """
     @functools.wraps(func)
     def wrapper_authorization_required(*args, **kwargs):
+        try:
+            token_payload = g.token_payload
+        except:
+            raise Exception('authorization_required requires token_required decorator as prerequisite')
+
         # Retrieves id and checks integrity
         id = request.view_args.get("u_id")
         
         # If there is no id, but "current" at the url, 
         # set id to the id of the user associated with the auth token provided to the api call
         if(id == "current"):
-            id = g.user.id
+            id = token_payload.get("uid")
 
         # Check if supplied id complains with UUID standards
         if(not is_uuid(id)):
             return format_response("invalid user id", 422)
 
-        # If id is str, parse it to UUID
-        if(type(id) == type(" ")):
-            id = uuid.UUID(id)
-
         # If the token is not owned by an admin, and the url id dont match with the id of the supplied token owner
         # Cancel the operation because a user can only make ops on his data
-        if((id != g.user.id) and (not g.user.admin)):
+        if((id != token_payload.get("uid")) and (not token_payload.get("adm"))):
             return format_response("non authorized", 403)
 
-        if(id != g.user.id):
-            user = User.query.filter(User.id == id).first()
-            if(not user):
-                return format_response("requested user not found", 404)
-            g.user = user 
-
-        value = func(*args, **kwargs)
+        value = func(user_id=id, *args, **kwargs)
         return value
     return wrapper_authorization_required
 
@@ -108,14 +99,7 @@ def task_required(func):
         if(not is_uuid(id)):
             return format_response("invalid task id", 422)
 
-        # Tries to retrieve the task
-        task = Task.query.filter(Task.id == id).first()
-        if(not task):
-            return format_response("task not found", 404)
-
-        g.task = task
-
-        value = func(*args, **kwargs)
+        value = func(task_id=id, *args, **kwargs)
         return value
     return wrapper_task_required
 
