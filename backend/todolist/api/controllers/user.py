@@ -22,6 +22,7 @@ class UserController(Resource):
         return make_response(
             jsonify({
                 "id": user.id,
+                "admin": user.admin,
                 "email": user.email
             }), 
             200
@@ -60,7 +61,7 @@ class UserController(Resource):
             return format_response("user not found", 404)
 
         # If user is admin, cant be deleted by other admin, but by himslef
-        if(user.is_admin and (user.id != token_data.get("id"))):
+        if(user.admin and (user.id != token_data.get("id"))):
             return format_response("non authorized", 403)
 
         # Try to retrieve oauth_token related to the user
@@ -91,7 +92,7 @@ class UserList(Resource):
             user_data = {
                 "id": user.id,
                 "email": user.email,
-                "is_admin": user.is_admin
+                "admin": user.admin
             }
 
             # Append user to the output dictionary
@@ -125,6 +126,7 @@ class UserList(Resource):
         return make_response(
             jsonify({
                 "id": user.id,
+                "admin": user.admin,
                 "email": user.email
             }), 
             201

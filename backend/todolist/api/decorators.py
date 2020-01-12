@@ -36,7 +36,7 @@ def token_required(func):
 
         token_data = {
             "id": payload.get("uid"),
-            "is_admin": payload.get("adm")
+            "admin": payload.get("adm")
         }
 
         g.token_data = token_data
@@ -78,7 +78,7 @@ def admin_required(func):
 
         token_data = {
             "id": payload.get("uid"),
-            "is_admin": payload.get("adm")
+            "admin": payload.get("adm")
         }
 
         g.token_data = token_data
@@ -105,7 +105,7 @@ def authorization_required(func):
 
         # If the token is not owned by an admin, and the url id dont match with the id of the supplied token owner
         # Cancel the operation because a user can only make ops on his data
-        if((id != g.token_data.get("id")) and (not g.token_data.get("is_admin"))):
+        if((id != g.token_data.get("id")) and (not g.token_data.get("admin"))):
             return format_response("non authorized", 403)
 
         value = func(user_id=id, *args, **kwargs)
