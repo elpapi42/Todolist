@@ -23,29 +23,8 @@ class UserController(Resource):
             jsonify({
                 "id": user.id,
                 "admin": user.admin,
-                "email": user.email
-            }), 
-            200
-        )
-
-    def put(self, user_id, *args, **kwargs):
-        return format_response("PUT will be implemented when the user get some data like username or biography", 501)
-
-        # Retrieves user
-        user = User.query.get(user_id)
-        if(not user):
-            return format_response("user not found", 404)
-
-        # Edit user data from here
-
-        # Commit changes to the database
-        db.session.commit()
-
-        # Return the lasts state of the user entry
-        return make_response(
-            jsonify({
-                "id": user.id,
-                "email": user.email
+                "email": user.email,
+                "created": user.created
             }), 
             200
         )
@@ -84,7 +63,8 @@ class UserList(Resource):
             user_data = {
                 "id": user.id,
                 "email": user.email,
-                "admin": user.admin
+                "admin": user.admin,
+                "created": user.created
             }
 
             # Append user to the output dictionary
