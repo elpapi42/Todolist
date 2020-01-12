@@ -1,21 +1,19 @@
-from flask import request, make_response, jsonify
+from flask import request, make_response, jsonify, g
 from flask_restful import Resource
 
 from ... import db
 from ..models import Task
 from . import format_response
-from ..decorators import token_required, authorization_required, task_id_required
+from ..decorators import token_required, authorization_required, task_required
 
 class TaskController(Resource):
     """ Get, Edit or Delete Task """
 
-    method_decorators = [task_id_required, authorization_required, token_required]
+    method_decorators = [task_required, authorization_required, token_required]
 
-    def get(self, task_id, *args, **kwargs):
+    def get(self, *args, **kwargs):
         # Retrieve task
-        task = Task.query.filter(Task.id == task_id).first()
-        if(not task):
-            return format_response("task not found", 404)
+        task = g.task
 
         return make_response(
             jsonify({
@@ -27,11 +25,9 @@ class TaskController(Resource):
             200
         )
 
-    def put(self, task_id, *args, **kwargs):
+    def put(self, *args, **kwargs):
         # Retrieve task
-        task = Task.query.filter(Task.id == task_id).first()
-        if(not task):
-            return format_response("task not found", 404)
+        task = g.task
 
         # Update title
         title = request.form.get("title")
@@ -43,7 +39,7 @@ class TaskController(Resource):
         if(description):
             task.description = description
 
-        # Update is_done
+        # Update done
         done = (request.form.get("done") in ["True", "true", "1"]) if request.form.get("done") else None
         if(done != None):
             task.done = done
@@ -60,12 +56,11 @@ class TaskController(Resource):
             200
         )
 
-    def delete(self, task_id, *args, **kwargs):
+    def delete(self, *args, **kwargs):
         # Retrieve task
-        task = Task.query.filter(Task.id == task_id).delete()
-        if(not task):
-            return format_response("task not found", 404)
+        task = g.task
 
+        db.session.delete(task)
         db.session.commit()
         
         return format_response("task deleted", 204)
@@ -75,17 +70,19 @@ class TaskList(Resource):
 
     method_decorators = [authorization_required, token_required]
 
-    def get(self, user_id, *args, **kwargs):
+    def get(self, *args, **kwargs):
         # Check if the client want to get the task with done=True
         # If true, return all the completed tasks
         # If false, return all the uncomplete tasks
         # If None, return all the tasks
         return_done = (request.args.get("done") in ["True", "true", "1"]) if request.args.get("done") else None
 
+        user = g.user
+
         if(return_done == None):
-            tasks = Task.query.filter(Task.user_id == user_id).all()
+            tasks = user.tasks
         else:
-            tasks = Task.query.filter(Task.user_id == user_id, Task.done == return_done).all()
+            tasks = Task.query.filter(Task.user_id == user.id, Task.done == return_done).all()
 
         tasks_list = []
 
@@ -106,7 +103,7 @@ class TaskList(Resource):
             200
         )
 
-    def post(self, user_id, *args, **kwargs):
+    def post(self, *args, **kwargs):
         # Retrieves data from body
         title = request.form.get("title")
         description = request.form.get("description")
@@ -116,7 +113,7 @@ class TaskList(Resource):
             return make_response("missing title", 400)
 
         # Create task and associate it with the user
-        task = Task(title, user_id)
+        task = Task(title, g.user.id)
 
         # Set description, if there is one in the request body
         task.description = description if description else ""

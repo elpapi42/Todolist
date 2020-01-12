@@ -1,6 +1,7 @@
 import functools
 import jwt
 import os
+import uuid
 
 from validator_collection.checkers import is_uuid
 from flask import request, g
@@ -35,7 +36,7 @@ def token_required(func):
         except jwt.DecodeError:
             return format_response("invalid token", 401)
 
-        user = User.query.filter(User.id == payload.get("uid"))
+        user = User.query.filter(User.id == uuid.UUID(payload.get("uid"))).first()
         if(not user):
             return format_response("user not found", 404)
 
@@ -54,7 +55,7 @@ def admin_required(func):
         except:
             raise Exception('admin_required requires token_required decorator as prerequisite')
 
-        if(not user.admin)
+        if(not user.admin):
             return format_response("non authorized", 403)
 
         value = func(*args, **kwargs)
@@ -67,7 +68,7 @@ def authorization_required(func):
     def wrapper_authorization_required(*args, **kwargs):
         # Retrieves id and checks integrity
         id = request.view_args.get("u_id")
-
+        
         # If there is no id, but "current" at the url, 
         # set id to the id of the user associated with the auth token provided to the api call
         if(id == "current"):
@@ -77,10 +78,20 @@ def authorization_required(func):
         if(not is_uuid(id)):
             return format_response("invalid user id", 422)
 
+        # If id is str, parse it to UUID
+        if(type(id) == type(" ")):
+            id = uuid.UUID(id)
+
         # If the token is not owned by an admin, and the url id dont match with the id of the supplied token owner
         # Cancel the operation because a user can only make ops on his data
         if((id != g.user.id) and (not g.user.admin)):
             return format_response("non authorized", 403)
+
+        if(id != g.user.id):
+            user = User.query.filter(User.id == id).first()
+            if(not user):
+                return format_response("requested user not found", 404)
+            g.user = user 
 
         value = func(*args, **kwargs)
         return value
