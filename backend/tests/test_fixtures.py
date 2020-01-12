@@ -6,7 +6,7 @@ import uuid
 import pytest
 
 from todolist import create_app, db
-from todolist.auth.models import OAuth
+from todolist.auth.models import OAuthToken
 from todolist.api.models import User
 
 @pytest.fixture
@@ -40,13 +40,7 @@ def user():
         user.id = id
         db.session.add(user)
 
-        github_token = {
-            "access_token": "97f801e817bf4d4d3b3c22514a8608b047789823", 
-            "token_type": "bearer", 
-            "scope": [""]
-        }
-
-        oauth_token = OAuth("github", github_token, user.id)
+        oauth_token = OAuthToken("github", "97f801e817bf4d4d3b3c22514a8608b047789823", user.id)
         db.session.add(oauth_token)
 
         db.session.commit()
@@ -82,7 +76,7 @@ def admin():
         user.id = id
         db.session.add(user)
 
-        oauth_token = OAuth("local", None, user.id)
+        oauth_token = OAuthToken("github", "97f801e817bf4d4d3b3c22514a8608b047789823", user.id)
         db.session.add(oauth_token)
 
         db.session.commit()

@@ -35,7 +35,7 @@ class UserController(Resource):
             return format_response("user not found", 404)
 
         # Try to retrieve oauth_token related to the user
-        oauth_token = user.oauth
+        oauth_token = user.oauth_token
         if(not oauth_token):
             return format_response("database integrity error", 500)
 
