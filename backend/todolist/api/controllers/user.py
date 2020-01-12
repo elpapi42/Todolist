@@ -4,7 +4,6 @@ from flask_restful import Resource
 
 from ... import db
 from ..models import User
-from ...auth.models import OAuth
 from . import format_response
 from ..decorators import token_required, admin_required, authorization_required
 

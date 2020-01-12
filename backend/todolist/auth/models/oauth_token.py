@@ -4,11 +4,13 @@ from sqlalchemy.dialects.postgresql import UUID
 
 from ... import db
 
-class OAuth(db.Model):
+class OAuthToken(db.Model):
     """ Storage for oauth tokens """
     __tablename__ = "oauth_tokens"
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, unique=True, nullable=False)
+    provider = db.Column(db.String(16), nullable=False)
+    token = db.Column(db.String, nullable=False)
 
     user_id = db.Column(UUID(as_uuid=True), db.ForeignKey("users.id"))
 
@@ -19,4 +21,4 @@ class OAuth(db.Model):
         self.user_id = user_id
         
     def __repr__(self):
-        return "<OAuth Token: {}>".format(self.token)
+        return "<OAuth Token: {}>".format(self.provider)

@@ -15,7 +15,7 @@ class User(db.Model):
     admin = db.Column(db.Boolean, default=False, nullable=False)
     created = db.Column(db.DateTime(timezone=True), default=datetime.utcnow().replace(tzinfo=pytz.utc), nullable=False)
 
-    oauth = db.relationship("OAuth", backref="user", uselist=False)
+    oauth_token = db.relationship("OAuthToken", backref="user", uselist=False)
     tasks = db.relationship("Task", backref="user")
 
     def __init__(self, email):
