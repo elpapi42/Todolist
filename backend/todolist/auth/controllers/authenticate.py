@@ -17,13 +17,13 @@ class Authenticate(Resource):
             return format_response("missing authorization code", 400)
 
         # Retrieve provider client data from db
-        oauth_client = OAuthClient.query.filter(OAuthClient.client_handle == handle).first()
+        oauth_client = OAuthClient.query.filter(OAuthClient.handle == handle).first()
         if(not oauth_client):
             return format_response("client not found", 404)
 
         return make_response(
             jsonify({
-                "data": oauth_client.client_handle
+                "data": oauth_client.handle
             }), 
             200
         )

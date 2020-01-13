@@ -10,7 +10,7 @@ from . import client_bp
 @click.argument("secret")
 def add_oauth_client(handle, id, secret):
 
-    oauth_client = OAuthClient.query.filter(OAuthClient.client_handle == handle).first()
+    oauth_client = OAuthClient.query.filter(OAuthClient.handle == handle).first()
     if(oauth_client):
         print("client already registered")
         return False
@@ -28,7 +28,7 @@ def add_oauth_client(handle, id, secret):
 @click.argument("handle")
 def add_oauth_client(handle):
 
-    oauth_client = OAuthClient.query.filter(OAuthClient.client_handle == handle).first()
+    oauth_client = OAuthClient.query.filter(OAuthClient.handle == handle).first()
     if(not oauth_client):
         print("client not found")
         return False
