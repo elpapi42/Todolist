@@ -37,7 +37,7 @@ class Authenticate(Resource):
                 "client_secret": oauth_client.secret,
                 "code": auth_code,
                 "state": auth_state
-            }
+            },
             headers = {
                 "Accept": "application/json"
             }
