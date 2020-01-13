@@ -26,7 +26,7 @@ def user():
         "uid": str(id),
         "eml": "{}@test.com".format(id),
         "adm": False,
-        "urt": str(datetime.datetime.utcnow()),
+        "uct": str(datetime.datetime.utcnow()),
         "iat": datetime.datetime.utcnow(),
         "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=24),
     }
@@ -62,7 +62,7 @@ def admin():
         "uid": str(id),
         "eml": "{}@test.com".format(id),
         "adm": True,
-        "urt": str(datetime.datetime.utcnow()),
+        "uct": str(datetime.datetime.utcnow()),
         "iat": datetime.datetime.utcnow(),
         "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=24),
     }
