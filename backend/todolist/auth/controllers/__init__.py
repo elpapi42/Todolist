@@ -1,1 +1,1 @@
-from .token import IssueToken
+from .authenticate import Authenticate
