@@ -7,24 +7,19 @@ class TodoGetToken extends Component {
   }
 
     componentDidMount() {
-    	let params = new URLSearchParams(location.search);
-      let code = params.get('code');
-    }
-// let url = "https://pokeapi.co/api/v2/pokemon/1/"; Peticion al servidor pidiendo el token
-// axios.get(url)
-//   .then(function (response) {
-//     // handle success
-//     console.log(response);
-//   })
-//   .catch(function (error) {
-//     // handle error
-//     console.log(error);
-//   })
-//   .finally(function () {
-//     // always executed
-//   });
-// }
+    let paramscode = new URLSearchParams(location.search);
+    let code = paramscode.get('code');
+    let url = 'https://localhost:5000/auth/github/';
 
+  axios.get(url, {code:code})
+  .then(function (response) {
+    console.log(response);
+   })
+  .catch((error) => {
+    console.log(error);
+  });
+}
+ 
    render() {
     return (
       <div>
