@@ -8,8 +8,9 @@ module.exports = {
     filename: "bundle.js"
   },
   devServer: {
+    historyApiFallback: true,
     port: 3000,
-    contentBase: path.resolve(__dirname, "src")
+    contentBase: path.resolve(__dirname, "src"),
   },
   plugins: [
     new MiniCssExtractPlugin({

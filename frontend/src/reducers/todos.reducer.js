@@ -31,7 +31,7 @@ export default (state = initialState, action) => {
       if (indexNewTodo === -1) return { ...state };
 
       newArrayTodos[indexNewTodo] = { ...newArrayTodos[indexNewTodo], ...newtodo };
-      console.log(newArrayTodos);
+      // console.log(newArrayTodos);
       return {
         ...state,
         todos: newArrayTodos
@@ -51,7 +51,7 @@ export default (state = initialState, action) => {
 
       localStorage.setItem("todos", JSON.stringify(newT.todos));
       const save = localStorage.getItem("todos");
-      console.log("Objeto: ", JSON.parse(save));
+      // console.log("Objeto: ", JSON.parse(save));
 
       return Object.assign({}, state, newT);
     }
