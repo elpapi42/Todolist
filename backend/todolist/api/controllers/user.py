@@ -4,7 +4,6 @@ from flask_restful import Resource
 
 from ... import db
 from ..models import User
-from ...auth.models import OAuth
 from . import format_response
 from ..decorators import token_required, admin_required, authorization_required
 
@@ -36,7 +35,7 @@ class UserController(Resource):
             return format_response("user not found", 404)
 
         # Try to retrieve oauth_token related to the user
-        oauth_token = user.oauth
+        oauth_token = user.oauth_token
         if(not oauth_token):
             return format_response("database integrity error", 500)
 

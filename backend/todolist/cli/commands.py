@@ -1,8 +1,6 @@
 import uuid
 import datetime
 import os
-import jwt
-
 import click
 from validator_collection import is_email
 
@@ -16,22 +14,24 @@ def make_user_admin(email):
 
     admins = User.query.filter(User.admin == True).all()
     if(len(admins) > 0):
-        print("Admins Already Registered, Contact Them for Get Admin Permissions")
+        print("admins already registered, contact one for request admin permissions")
         return False
 
     if(not is_email(email)):
-        print("Invalid Email")
+        print("invalid email")
         return False
 
     user = User.query.filter(User.email == email).first()
     if(not user):
-        print("Email Not Registered")
+        print("email not registered")
         return False
 
     user.admin = True
     db.session.commit()
-    print("Now {} has Admin Access".format(email))
+    print("now {} has admin permissions".format(email))
 
     return True
+
+
     
     
