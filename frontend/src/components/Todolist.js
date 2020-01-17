@@ -17,9 +17,6 @@ class Todolist extends Component {
           {todos.map(todo => (
             <Todo todo={todo} key={todo.id} id={todo.id} />
           ))}
-          {todos.map(todo => (
-            console.log(todo.id)
-          ))}
         </div>
       </div>
     );
