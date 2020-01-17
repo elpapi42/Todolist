@@ -4,11 +4,9 @@ from os.path import join, dirname
 from dotenv import load_dotenv
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
 from flask_cors import CORS
 
 db = SQLAlchemy()
-login_manager = LoginManager()
 cors = CORS()
 
 from todolist.api import api_bp
@@ -41,7 +39,6 @@ def create_app(testing=False):
 
     # Init Plugins
     db.init_app(app)
-    login_manager.init_app(app)
     cors.init_app(app)
 
     with app.app_context():
