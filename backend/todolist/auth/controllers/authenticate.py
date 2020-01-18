@@ -1,6 +1,7 @@
 import jwt
 import datetime
 import os
+import requests
 
 from flask import jsonify, request, make_response
 from flask_restful import Resource
@@ -30,7 +31,7 @@ class Authenticate(Resource):
         if(not oauth_client):
             return format_response("client not found", 404)
 
-        token_response = request.post(
+        token_response = requests.post(
             "https://github.com/login/oauth/access_token",
             data = {
                 "client_id": oauth_client.id,
