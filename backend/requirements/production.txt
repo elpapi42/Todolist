@@ -12,3 +12,4 @@ pyjwt
 gunicorn
 psycopg2
 pytz
+requests

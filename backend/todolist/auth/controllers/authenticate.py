@@ -42,15 +42,19 @@ class Authenticate(Resource):
             headers = {
                 "Accept": "application/json"
             }
-        )
+        ).json()
 
         if(not token_response):
-            return format_response("oauth provider platform error", 500)
+            return format_response("platform connection error", 500)
+
+        error = token_response.get("error_description")
+        if(error):
+            return format_response(error, 400)
 
         token = token_response.get("access_token")
         schema = token_response.get("token_type")
 
-        email_response = request.get(
+        email_response = requests.get(
             "https://api.github.com/user/emails",
             headers={"Authorization": schema + token},
         )
