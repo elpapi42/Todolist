@@ -1,6 +1,7 @@
 import jwt
 import datetime
 import os
+import requests
 
 from flask import jsonify, request, make_response
 from flask_restful import Resource
@@ -30,7 +31,7 @@ class Authenticate(Resource):
         if(not oauth_client):
             return format_response("client not found", 404)
 
-        token_response = request.post(
+        token_response = requests.post(
             "https://github.com/login/oauth/access_token",
             data = {
                 "client_id": oauth_client.id,
@@ -41,15 +42,19 @@ class Authenticate(Resource):
             headers = {
                 "Accept": "application/json"
             }
-        )
+        ).json()
 
         if(not token_response):
-            return format_response("oauth provider platform error", 500)
+            return format_response("platform connection error", 500)
+
+        error = token_response.get("error_description")
+        if(error):
+            return format_response(error, 400)
 
         token = token_response.get("access_token")
         schema = token_response.get("token_type")
 
-        email_response = request.get(
+        email_response = requests.get(
             "https://api.github.com/user/emails",
             headers={"Authorization": schema + token},
         )
