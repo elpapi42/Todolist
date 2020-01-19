@@ -59,6 +59,10 @@ class Authenticate(Resource):
             headers={"Authorization": schema + token},
         )
 
+        error = email_response.get("error_description")
+        if(error):
+            return format_response(error, 400)
+
         # Try to retrieve primary email from github
         try:
             email = [email.get("email") for email in email_response if email.get("primary") == True][0]
