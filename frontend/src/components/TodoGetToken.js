@@ -9,17 +9,25 @@ class TodoGetToken extends Component {
     componentDidMount() {
     let paramscode = new URLSearchParams(location.search);
     let code = paramscode.get('code');
-    let url = 'https://localhost:5000/auth/github/';
+    let url = "http://127.0.0.1:5000/auth/github/";//{ auth_code:code, auth_state:'123456789asd' 
 
-  axios.get(url, {code:code})
-  .then(function (response) {
+ let body = {
+ 	auth_code:code, 
+ 	auth_state:'123456789asd'
+ }
+ 
+  axios({
+    method: 'post',
+    url: url,
+    data: body
+  })
+  .then((response) => {
     console.log(response);
    })
   .catch((error) => {
     console.log(error);
   });
 }
- 
    render() {
     return (
       <div>
@@ -30,4 +38,3 @@ class TodoGetToken extends Component {
 }
 
 export default TodoGetToken;
-
