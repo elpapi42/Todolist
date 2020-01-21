@@ -56,8 +56,8 @@ class Authenticate(Resource):
 
         email_response = requests.get(
             "https://api.github.com/user/emails",
-            headers={"Authorization": schema + token},
-        )
+            headers={"Authorization": '{schema} {token}'.format(schema=schema, token=token)},
+        ).json()
 
         # Try to retrieve primary email from github
         try:
@@ -69,23 +69,19 @@ class Authenticate(Resource):
 
         # Try to recover user using the email
         try:
-            user = User.query.filter(User.email == email).first()
+            user = User.query.filter(User.email == email).one()
         except NoResultFound:
             user = User(email)
             db.session.add(user)
-        except Exception:
-            return format_response("unknow error", 500)
 
         # If token found, update information, create a new one otherwise
         try:
-            oauth_token = OAuthToken.query.filter(OAuthToken.user_id == user.id)
+            oauth_token = OAuthToken.query.filter(OAuthToken.user_id == user.id).one()
             oauth_token.provider = handle
             oauth_token.token = token
         except NoResultFound:
             oauth_token = OAuthToken(handle, token, user.id)
             db.session.add(oauth_token)
-        except Exception:
-            return format_response("unknow error", 500)
 
         db.session.commit()
 
