@@ -25,7 +25,7 @@ def token_required(func):
             return format_response("bad auth header", 400)
 
         # Check for bearer scheme
-        if(scheme != "Bearer"):
+        if(scheme not in ['Bearer', 'bearer']):
             return format_response("unsupported auth scheme", 400)
 
         # Try to Decode token
