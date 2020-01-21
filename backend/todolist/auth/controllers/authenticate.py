@@ -65,27 +65,23 @@ class Authenticate(Resource):
         except IndexError:
             return format_response("not email set with oauth provider", 500)
         except Exception:
-            return format_response("unknow error 1", 500)
+            return format_response("unknow error", 500)
 
         # Try to recover user using the email
         try:
-            user = User.query.filter(User.email == email).first()
+            user = User.query.filter(User.email == email).one()
         except NoResultFound:
             user = User(email)
             db.session.add(user)
-        except Exception:
-            return format_response("unknow error 2", 500)
 
         # If token found, update information, create a new one otherwise
         try:
-            oauth_token = OAuthToken.query.filter(OAuthToken.user_id == user.id)
+            oauth_token = OAuthToken.query.filter(OAuthToken.user_id == user.id).one()
             oauth_token.provider = handle
             oauth_token.token = token
         except NoResultFound:
             oauth_token = OAuthToken(handle, token, user.id)
             db.session.add(oauth_token)
-        except Exception:
-            return format_response("unknow error 3", 500)
 
         db.session.commit()
 
