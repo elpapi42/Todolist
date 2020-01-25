@@ -1,39 +1,66 @@
 import React, { Component } from "react";
 import axios from "axios";
+import qs from "qs";
+import { BrowserRouter as Router, Switch, Route, Link, Redirect } from "react-router-dom";
 
 class TodoGetToken extends Component {
- constructor(props) {
+  constructor(props) {
     super(props);
+    this.state = {
+      isLoggedIn: false
+    };
   }
 
-    componentDidMount() {
+  componentDidMount() {
     let paramscode = new URLSearchParams(location.search);
-    let code = paramscode.get('code');
-    let url = "http://127.0.0.1:5000/auth/github/";//{ auth_code:code, auth_state:'123456789asd' 
+    const code = paramscode.get("code");
+    const url = "http://127.0.0.1:5000/auth/github/";
 
- let body = {
- 	auth_code:code, 
- 	auth_state:'123456789asd'
- }
- 
-  axios({
-    method: 'post',
-    url: url,
-    data: body
-  })
-  .then((response) => {
-    console.log(response);
-   })
-  .catch((error) => {
-    console.log(error);
-  });
-}
-   render() {
-    return (
-      <div>
-      	<h1> Authorization Code Received and Sending to Backend </h1>
-      </div>
-    );
+    const body = {
+      auth_code: code,
+      auth_state: "123456789asd"
+    };
+
+    axios({
+      method: "post",
+      url: url,
+      data: qs.stringify(body),
+      headers: {
+        "content-type": "application/x-www-form-urlencoded;"
+      }
+    })
+      .then(response => {
+        console.log("Details of Response: ", response);
+        // console.log("Response Token: " + response.data.token);
+        const userSessionData = {
+          uToken: response.data.token
+        };
+        console.log("Saving on sessionStorage(userSessionData): ", userSessionData);
+        sessionStorage.setItem("userSess", qs.stringify(userSessionData));
+        this.setState({
+          isLoggedIn: true
+        });
+        console.log(this.state.isLoggedIn);
+      })
+      .catch(error => {
+        const token = sessionStorage.getItem("uToken");
+        sessionStorage.clear(console.log("sessionStorage Clear"));
+        console.log(error);
+        this.setState({
+          isLoggedIn: false
+        });
+      });
+  }
+  render() {
+    if (this.state.isLoggedIn === true) {
+      return <Redirect to="/App" />;
+    } else {
+      return (
+        <div>
+          <h1>Loading</h1>
+        </div>
+      );
+    }
   }
 }
 
