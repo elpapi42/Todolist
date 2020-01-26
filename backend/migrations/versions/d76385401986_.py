@@ -21,7 +21,6 @@ def upgrade():
     op.alter_column('oauth_clients', 'client_handle', nullable=False, new_column_name="handle")
     op.alter_column('oauth_clients', 'client_secret', nullable=False, new_column_name="secret")
     op.alter_column('oauth_clients', 'id', nullable=False, new_column_name="identifier")
-    op.alter_column('oauth_clients', 'client_id', nullable=False, new_column_name="id")
     # ### end Alembic commands ###
 
 
@@ -30,5 +29,4 @@ def downgrade():
     op.alter_column('oauth_clients', 'handle', nullable=False, new_column_name="client_handle")
     op.alter_column('oauth_clients', 'secret', nullable=False, new_column_name="client_secret")
     op.alter_column('oauth_clients', 'identifier', nullable=False, new_column_name="id")
-    op.alter_column('oauth_clients', 'id', nullable=False, new_column_name="client_id")
     # ### end Alembic commands ###
