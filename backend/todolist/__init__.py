@@ -10,7 +10,6 @@ db = SQLAlchemy()
 cors = CORS()
 
 from todolist.api import api_bp
-from todolist.web import web_bp
 from todolist.auth import auth_bp
 from todolist.cli import cli_bp, client_bp
 
@@ -42,7 +41,6 @@ def create_app(testing=False):
     cors.init_app(app)
 
     with app.app_context():
-        app.register_blueprint(web_bp)
         app.register_blueprint(api_bp, url_prefix="/api")
         app.register_blueprint(auth_bp, url_prefix="/auth")
         app.register_blueprint(cli_bp)
