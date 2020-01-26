@@ -45,7 +45,7 @@ class TaskController(Resource):
 
         # Update done
         done = (request.form.get("done") in ["True", "true", "1"]) if request.form.get("done") else None
-        if(done != None):
+        if(done is not None):
             task.done = done
 
         db.session.commit()
@@ -84,7 +84,7 @@ class TaskList(Resource):
         return_done = (request.args.get("done") in ["True", "true", "1"]) if request.args.get("done") else None
 
         # Retrieve Tasks
-        if(return_done == None):
+        if(return_done is None):
             tasks = Task.query.filter(Task.user_id == user_id).all()
         else:
             tasks = Task.query.filter(Task.user_id == user_id, Task.done == return_done).all()
