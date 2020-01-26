@@ -10,7 +10,7 @@ class TodoCreateForm extends Component {
     };
   }
 
-  handleChange = (e) => {
+  handleChange = e => {
     const { value } = e.target;
     if (value.length <= 30)
       this.setState({
