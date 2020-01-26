@@ -12,7 +12,7 @@ class OAuthToken(db.Model):
     provider = db.Column(db.String(16), nullable=False)
     token = db.Column(db.String, nullable=False)
 
-    user_id = db.Column(UUID(as_uuid=True), db.ForeignKey("users.id"))
+    user_id = db.Column(UUID(as_uuid=True), db.ForeignKey("users.id"), nullable=False)
 
     def __init__(self, provider, token, user_id):
         self.id = uuid.uuid4()
